@@ -65,8 +65,8 @@ New features will be added over time.
 
 ### Solvers
 * Frequency-domain dynamical analysis
-* Newton-Raphson method for geometrically nonlinear statics and dynamics
-* Arc-length method for geometrically nonlinear statics and dynamics with strong nonlinearities (e.g. post-buckling analysis)
+* Newton-Raphson method for geometrically nonlinear elastostatics and elastodynamics
+* Arc-length method for geometrically nonlinear elastostatics and elastodynamics with strong nonlinearities (e.g. post-buckling analysis)
 
 ### Post-processing
 * Plotting of Frequency-Response Functions (FRF)
