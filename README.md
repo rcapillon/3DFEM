@@ -81,7 +81,9 @@ New features will be added over time.
 * Support for export of element stress and strain components to the VTK files
 
 ### Uncertainty Quantification
-
-
-
-
+* Typical Maximum Entropy-probability distributions for elastic coefficients (Young's modulus, Poisson's ratio, anisotropic coefficients) for **parametric uncertainties**
+* Typical Maximum Entropy-probability distributions for mass, linear elastic stiffness and Rayleigh damping matrices for **nonparametric uncertainties**
+* Monte Carlo method for uncertainty propagation with plotting of confidence intervals
+* Gaussian Kernel Density Estimation (GKDE) for the estimation of probability density functions of observable quantities
+* Inverse problems solving for optimization of prior probability models
+* Causal nonparametric probabilistic models (linear viscoelasticity)
