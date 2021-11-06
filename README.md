@@ -55,11 +55,10 @@ New features will be added over time.
 
 ### Materials
 * All anisotropy classes for elastic materials
-* Linear viscoelasticity using the Generalized Maxwell Model
+* Linear viscoelastic materials using the Generalized Maxwell Model
 
 ### Structural matrices
 * Arbitrary Dirichlet boundary conditions
-* Lumped mass matrix
 
 ### Reduced-Order Modeling
 * Proper Orthogonal Decomposition (POD) for nonlinear problems
