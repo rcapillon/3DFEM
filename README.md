@@ -65,7 +65,7 @@ New features will be added over time.
 
 ### Forces
 * Body forces
-* Allowing for the definition of surface forces
+* Surface forces
 
 ### Solvers
 * Frequency-domain dynamical analysis
