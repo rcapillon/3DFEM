@@ -10,7 +10,7 @@ New features will be added over time.
 ### Meshes
 * Tetrahedral mesh generation from a set of points using scipy.spatial.Delaunay
 * 4-node tetrahedral (Tet4) elements support
-* Support for unstructured meshes (useless for now, since a single element type is available)
+* Support for unstructured meshes (unused for now, since only a single element type is available)
 * Full Gauss quadrature scheme
 
 ### Materials
