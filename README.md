@@ -74,7 +74,7 @@ New features will be added over time.
 
 ### Post-processing
 * Plotting of Frequency-Response Functions (FRF)
-* Support for export of element stress and strain components to the VTK files
+* Support for including element stress and strain components in the VTK files
 
 ### Uncertainty Quantification
 * Typical Maximum Entropy-probability distributions for elastic coefficients (Young's modulus, Poisson's ratio, anisotropic coefficients) for **parametric uncertainties**
