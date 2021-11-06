@@ -43,6 +43,13 @@ New features will be added over time.
 
 ----
 
+## Examples of solutions
+
+![Alt Text](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_mode1.gif)
+*First linear elastic mode of a clamped-clamped beam displayed in Paraview*
+
+----
+
 ## Intended future features: 
 
 ### Meshes
