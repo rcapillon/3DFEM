@@ -2,10 +2,13 @@
 ## Python 3D finite element code
 
 This python code allows for solving 3D structural problems using the finite element method.
+
 The code is intended to solve problems over unstructured meshes, no optimization is done by accounting for e.g. linear elements only.
+
 New features will be added over time.
 
-As of now, here is a summary of the code's capabilities:
+
+*As of now, here is a summary of the code's capabilities:*
 
 ### Meshes
 * Tetrahedral mesh generation from a set of points using scipy.spatial.Delaunay
