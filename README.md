@@ -78,6 +78,7 @@ New features will be added over time.
 
 ### Post-processing
 * Plotting of Frequency-Response Functions (FRF)
+* Support for export of element stress and strain components to the VTK files
 
 ### Uncertainty Quantification
 
