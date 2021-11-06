@@ -11,7 +11,6 @@ New features will be added over time.
 * Tetrahedral mesh generation from a set of points using scipy.spatial.Delaunay
 * 4-node tetrahedral (Tet4) elements support
 * Support for unstructured meshes (unused for now, since only a single element type is available)
-* Full Gauss quadrature scheme
 
 ### Materials
 * Linear isotropic elastic materials
@@ -21,6 +20,7 @@ New features will be added over time.
 * Linear elastic stiffness matrix
 * Rayleigh damping matrix (linear combination of mass and stiffness matrices)
 * Support for zero-Dirichlet boundary conditions
+* Full Gauss quadrature scheme
 
 ### Reduced-Order Modeling
 * Projection on linear elastic modes
