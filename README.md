@@ -1,11 +1,13 @@
 # 3DFEM
-## Python 3D finite element code
+## Python 3D finite element library
 
-This python code allows for solving 3D structural problems using the finite element method.
+This python library for solving 3D structural problems using the finite element method.
 New features will be added over time.
 
 
 *As of now, here is a summary of the code's capabilities:*
+
+## Current features:
 
 ### Meshes
 * Tetrahedral mesh generation from a set of points using scipy.spatial.Delaunay
