@@ -1,0 +1,93 @@
+\documentclass[12pt, openany]{report}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[a4paper,left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+
+\usepackage{titlesec}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{ulem}
+\usepackage{bbold}
+\usepackage{float}
+\usepackage{libertine}
+\usepackage[pdftex]{graphicx}
+\usepackage[title,titletoc]{appendix}
+\usepackage{textcomp}
+\usepackage{gensymb}
+\usepackage{newunicodechar}
+\usepackage{caption}
+\captionsetup{labelsep=space}
+\usepackage{titlesec}
+\usepackage{epsfig}
+\usepackage{subcaption}
+\usepackage{url}
+\usepackage{hyperref}
+
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+\titleformat{\chapter}[hang]
+  {\Huge\bfseries}{\thechapter{. }}{0pt}{\Huge}
+
+\setcounter{tocdepth}{2}
+
+\begin{document}
+
+\begin{titlepage}
+  \begin{sffamily}
+  \begin{center}
+
+    % Upper part of the page. The '~' is needed because \\
+    % only works if a paragraph has started.
+    %\includegraphics[scale=0.99]{bayoen1.png}~\\[1.5cm]
+
+    % \textsc{\LARGE Association Bayoen}\\[2cm]
+
+    % Title
+    \HRule \\[0.4cm]
+    { \huge \bfseries \textsc{3DFEM Python library}\\[0.4cm] }
+    \HRule \\[0.5cm]
+    
+    \textsc{\Large Documentation}\\[1.8cm]
+    
+    %\includegraphics[scale=0.99]{bayoen2.png}
+    %\\[2cm]
+
+    %{\large \url{https://github.com/bayoen-fr/melon-python}}\\[2cm]
+
+    % Author and supervisor
+%    \begin{minipage}{0.4\textwidth}
+ %     \begin{flushleft} \large
+  %      \small Serveur Discord :\\
+   %     \scriptsize \url{http://bit.ly/BayoenDiscord}\\
+    %    \small Chaîne Youtube :\\
+     %   \scriptsize \url{https://www.youtube.com/user/bayoenfr}\\
+   %   \end{flushleft}
+  %  \end{minipage}
+  %  \begin{minipage}{0.40\textwidth}
+   %   \begin{flushleft} \large
+   %   	\small Chaîne Twitch :\\
+   %     \scriptsize \url{https://www.twitch.tv/bayoen}\\
+    %    \small Twitter :\\
+    %    \scriptsize \href{https://twitter.com/bayoen_fr}{@bayoen\_fr}
+   %   \end{flushleft}
+  %  \end{minipage}
+
+    \vfill
+
+    % Bottom of the page
+    
+  \end{center}
+  \end{sffamily}
+\end{titlepage}
+
+\tableofcontents
+
+\chapter{Manual}
+
+\end{document}
