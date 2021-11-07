@@ -46,6 +46,10 @@ New features will be added over time.
 
 *First linear elastic mode of a clamped-clamped beam displayed in Paraview*
 
+![Alt Text](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_dynamics.gif)
+
+*Cantilever beam with Rayleigh damping pulled up by a constant force on its free end, then released*
+
 ----
 
 ## Intended future features: 
