@@ -48,7 +48,7 @@ New features will be added over time.
 
 ![Alt Text](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_dynamics.gif)
 
-*Cantilever beam with Rayleigh damping pulled up by a constant force on its free end, then released*
+*Linear elastic cantilever beam with Rayleigh damping pulled up by a constant force on its free end, then released*
 
 ----
 
