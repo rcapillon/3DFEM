@@ -58,7 +58,7 @@ New features will be added over time.
 ## Intended future features: 
 
 ### Meshes
-* Tet10, Brick8, Brick27, Prism6, Prism18 elements support
+* Support for Tet10, Brick8, Brick27, Prism6, Prism18 elements
 
 ### Materials
 * All anisotropy classes for elastic materials
