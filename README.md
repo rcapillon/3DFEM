@@ -8,8 +8,6 @@ New features will be added over time.
 * Python 3
 * numpy, scipy
 
-*As of now, here is a summary of the code's capabilities:*
-
 ## Current features:
 
 ### Meshes
