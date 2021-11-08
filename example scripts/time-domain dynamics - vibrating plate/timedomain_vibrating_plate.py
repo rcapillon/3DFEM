@@ -162,7 +162,7 @@ print("Post-processing...")
 
 mat_U = solver.get_mat_U()
 
-file_name = "./animations/animation_newmark_plaque/animation_newmark_plaque"
+file_name = "animation_timedomain_vibrating_plate"
 scale = 2e3
 fun.export_U_newmark_animation(file_name, mesh, mat_U, scale)
 
