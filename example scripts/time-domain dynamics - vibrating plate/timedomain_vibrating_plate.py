@@ -152,7 +152,13 @@ beta2 = 1.0/2
 
 n_modes = 300
 
+solver_subtime_start = time.time()
+
 solver.linear_newmark_solver(beta1, beta2, t_0, t_max, n_timesteps, n_modes, verbose=False)
+
+solver_subtime_end = time.time()
+
+print("Solver sub-time: ", np.round_(solver_subtime_end - solver_subtime_start, 3), "seconds.")
 
 ####
 # post-processing
@@ -162,8 +168,8 @@ print("Post-processing...")
 
 mat_U = solver.get_mat_U()
 
-file_name = "animation_timedomain_vibrating_plate"
-scale = 2e3
+file_name = "./animations/animation_newmark_plaque/animation_newmark_plaque"
+scale = 2.5e2
 fun.export_U_newmark_animation(file_name, mesh, mat_U, scale)
 
 ####
@@ -174,4 +180,4 @@ print("Computation done.")
 
 computation_time_end = time.time()
 
-print(np.round_(computation_time_end - computation_time_start, 3), 'sec elapsed')
+print("Total computation time: ", np.round_(computation_time_end - computation_time_start, 3), "seconds.")
