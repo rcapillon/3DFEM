@@ -26,9 +26,9 @@ computation_time_start = time.time()
 
 print("Defining timestepping parameters...")
 
-n_timesteps = 2000
+n_timesteps = 800
 t_0 = 0.0
-t_max = 0.2
+t_max = 0.04
 
 ####
 # material
@@ -104,8 +104,8 @@ print("Defining structure...")
 
 structure = classes.Structure(mesh)
 
-alphaM = 1e-5
-alphaK = 1e-5
+alphaM = 1e-6
+alphaK = 1e-6
 structure.set_rayleigh(alphaM, alphaK)
 
 structure.set_U0L()
@@ -128,7 +128,7 @@ force.add_nodal_forces_t0(ls_nodes_force, nodal_force_vector)
 
 vec_variation = np.zeros((n_timesteps,))
 
-t_prime = 1e-1
+t_prime = 2e-2
 tau = 1e-2
 
 vec_t = np.linspace(t_0, t_max, n_timesteps)
@@ -150,7 +150,7 @@ solver = classes.Solver(structure, force)
 beta1 = 1.0/2
 beta2 = 1.0/2
 
-n_modes = 100
+n_modes = 300
 
 solver.linear_newmark_solver(beta1, beta2, t_0, t_max, n_timesteps, n_modes, verbose=False)
 
@@ -163,7 +163,7 @@ print("Post-processing...")
 mat_U = solver.get_mat_U()
 
 file_name = "./animations/animation_newmark_plaque/animation_newmark_plaque"
-scale = 2e3/3
+scale = 2e3
 fun.export_U_newmark_animation(file_name, mesh, mat_U, scale)
 
 ####
