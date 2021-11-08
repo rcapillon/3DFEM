@@ -1,3 +1,13 @@
+##############################################################################
+#                                                                            #
+# This Python file is part of the 3DFEM library available at:                #
+# https://github.com/rcapillon/3DFEM                                         #
+# under GNU General Public License v3.0                                      #
+#                                                                            #
+# Code written by Rémi Capillon                                              #
+#                                                                            #
+##############################################################################
+
 import numpy as np
 import scipy.sparse
 from scipy.sparse.linalg import eigsh, spsolve
