@@ -60,6 +60,10 @@ New features will be added over time.
 
 *Linear elastic cantilever beam with Rayleigh damping pulled up by a constant force on its free end, then released*
 
+![Alt Text](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/plate_dynamics.gif)
+
+*Linear elastic plate with Rayleigh damping excited by a nodal force, at the center of the upper face, varying with a "bell curve"-envelope*
+
 ----
 
 ## Intended future features: 
