@@ -282,26 +282,6 @@ class Tet4(Element):
     
     def get_mat_Ke(self):
         return self.__mat_Ke
-            
-class Tet10(Element):
-    def __init__(self):
-        super(Tet10, self).__init__()
-    
-class Prism6(Element):
-    def __init__(self):
-        super(Prism6, self).__init__()
-    
-class Prism18(Element):
-    def __init__(self):
-        super(Prism18, self).__init__()
-    
-class Brick8(Element):
-    def __init__(self):
-        super(Brick8, self).__init__()
-    
-class Brick27(Element):
-    def __init__(self):
-        super(Brick27, self).__init__()
         
 class Mesh:
     def __init__(self, points):
