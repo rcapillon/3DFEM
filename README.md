@@ -4,6 +4,8 @@
 This python library for solving 3D structural problems using the finite element method.
 New features will be added over time.
 
+*This library has **NOT** been validated on reference cases yet.*
+
 ## Requirements and dependencies
 * Python 3
 * numpy, scipy
