@@ -4,6 +4,10 @@
 This python library for solving 3D structural problems using the finite element method.
 New features will be added over time.
 
+## Requirements and dependencies
+* Python 3
+* numpy, scipy
+
 *As of now, here is a summary of the code's capabilities:*
 
 ## Current features:
@@ -38,8 +42,6 @@ New features will be added over time.
 ### Post-processing
 * Export of a deformed mesh to VTK format (PolyData legacy format)
 * Export of a series of deformed meshes to VTK format for animations (for visualizing elastic modes, or deformations in time-domain dynamical analyses)
-
-## Dependencies
 
 ----
 
