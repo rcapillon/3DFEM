@@ -8,6 +8,8 @@ New features will be added over time.
 * Python 3
 * numpy, scipy
 
+* Paraview is suggested for visualizing exported VTK files, especially since animations are generated as a series of VTK files as handled by this software.
+
 ## Current features:
 
 ### Meshes
