@@ -4,3 +4,7 @@
 /doc/3DFEM_manual.out
 /doc/3DFEM_manual.toc
 /doc/3DFEM_manual.log
+
+# animations and images
+/animations
+/images
