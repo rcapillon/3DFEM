@@ -1,0 +1,2 @@
+\babel@toc {french}{}
+\contentsline {chapter}{\numberline {1}Manual}{2}{chapter.1}%
