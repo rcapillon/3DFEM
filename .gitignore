@@ -6,5 +6,5 @@
 /doc/3DFEM_manual.log
 
 # animations and images
-/animations
-/images
+3DFEM/animations
+3DFEM/images
