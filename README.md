@@ -13,7 +13,7 @@ New features will be added over time.
 * Paraview is suggested for visualizing exported VTK files, especially since animations are generated as a series of VTK files as handled by this software.
 
 ## Remarks
-* Exporting animation files can take a long time since independent VTK files are generated for each frame of the animation. For instance, in the provided time-domain example of a vibrating plate, exporting the 800 frames takes around 35 minutes -compared to around 8 minutes for the actual FEM computation- on a recent laptop (Macbook Pro M1 2020).
+* Exporting animation files can take a long time since independent VTK files are generated for each frame of the animation. For instance, in the provided time-domain example of a vibrating plate, exporting the 800 frames takes around 14 minutes -compared to around 8 minutes for the actual FEM computation- on a recent laptop (Macbook Pro M1 2020).
 
 ## Current features:
 
