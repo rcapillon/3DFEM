@@ -1,3 +1,3 @@
 # Example scripts
 
-Script files should be placed in the same folder as *classes.py* and *functions.py*.
+Example script files should be placed in ./3DFEM/ before being executed.
