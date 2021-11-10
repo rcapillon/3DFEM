@@ -16,7 +16,7 @@ New features will be added over time.
 
 ### Meshes
 * Tetrahedral mesh generation from a set of points using scipy.spatial.Delaunay
-* 4-node tetrahedral (Tet4) elements support
+* 4-node tetrahedral (Tet4), 6-node prism (Prism6), 8-node brick (Brick8) elements support
 * Support for meshes containing different types of elements, possibly of different orders (unused for now as only one type of element is available)
 
 ### Materials
@@ -62,7 +62,7 @@ New features will be added over time.
 ## Intended future features: 
 
 ### Meshes
-* Support for Tet10, Brick8, Brick27, Prism6, Prism18 elements
+* Support for Tet10, Prism18, Brick27 elements
 
 ### Materials
 * All anisotropy classes for elastic materials
