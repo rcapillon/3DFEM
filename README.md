@@ -59,7 +59,7 @@ New features will be added over time.
 
 ![Alt Text](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/plate_dynamics.gif)
 
-* Linear elastic plate with Rayleigh damping excited by a nodal force, on the center of the upper face, varying with a bell curve envelope.
+*Linear elastic plate with Rayleigh damping excited by a nodal force, on the center of the upper face, varying with a bell curve envelope*
 
 ----
 
