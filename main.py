@@ -44,7 +44,7 @@ print("Defining timestepping parameters...")
 
 n_timesteps = 800
 t_0 = 0.0
-t_max = 8e-3
+t_max = 0.04
 
 ####
 # material
@@ -66,13 +66,13 @@ print("Defining geometry, mesh and Dirichlet conditions...")
 
 L_x = 1e0
 L_y = 1e0
-L_z = 2e-1
+L_z = 1e-1
 
 # mesh
 
-Nn_x = 41
-Nn_y = 41
-Nn_z = 10
+Nn_x = 11
+Nn_y = 11
+Nn_z = 2
 
 line_x = np.linspace(0, L_x, Nn_x)
 line_y = np.linspace(0, L_y, Nn_y)
@@ -139,16 +139,16 @@ plate_force = force.Force(plate_mesh)
 force_coords = np.array([L_x/2, L_y/2, L_z])
 ls_nodes_force = fun.find_nodes_with_coordinates(plate_mesh.get_points(), force_coords)
 
-nodal_force_vector = np.array([0, 0, -1e0])
+nodal_force_vector = np.array([0, 0, -1e4])
 plate_force.add_nodal_forces_t0(ls_nodes_force, nodal_force_vector)
 
 vec_variation = np.zeros((n_timesteps,))
 
-t_prime = 1e-3
-tau = 1e-6 / 9
+t_prime = 2e-2
+tau = 1e-2
 
 vec_t = np.linspace(t_0, t_max, n_timesteps)
-vec_variation[:] = np.exp(-np.power(vec_t - np.repeat(t_prime, n_timesteps), 2) / tau) / np.sqrt(2 * np.pi * tau)
+vec_variation[:] = np.exp(-np.power(vec_t - np.repeat(t_prime, n_timesteps), 2) / tau)
 
 plate_force.set_F_variation(vec_variation)
 
@@ -184,8 +184,8 @@ print("Post-processing...")
 
 mat_U = plate_solver.get_mat_U()
 
-file_name = "./animation_timedomain_vibrating_plate"
-scale = 4e3
+file_name = "./animations/animation_timedomain_vibrating_plate/animation_timedomain_vibrating_plate"
+scale = 4e2
 fun.export_U_newmark_animation(file_name, plate_mesh, mat_U, scale)
 
 ####

@@ -1,6 +1,6 @@
 ##############################################################################
 #                                                                            #
-# This Python file is part of the 3DFEM library available at:                #
+# This Python file is part of the 3DFEM code available at:                   #
 # https://github.com/rcapillon/3DFEM                                         #
 # under GNU General Public License v3.0                                      #
 #                                                                            #

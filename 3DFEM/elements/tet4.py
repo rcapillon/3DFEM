@@ -1,6 +1,6 @@
 ##############################################################################
 #                                                                            #
-# This Python file is part of the 3DFEM library available at:                #
+# This Python file is part of the 3DFEM code available at:                   #
 # https://github.com/rcapillon/3DFEM                                         #
 # under GNU General Public License v3.0                                      #
 #                                                                            #
@@ -172,6 +172,10 @@ class Tet4(element.Element):
     def get_vec_nodes_coords(self):
         return self.__vec_nodes_coords
     
+    def set_nodes_coords(self, nodes_coords):
+        self.__nodes_coords = nodes_coords
+        self.__vec_nodes_coords = np.reshape(nodes_coords, tet4_n_dofs)
+    
     def get_nodes_reference_coords(self):
         return tet4_nodes_reference_coords
     
@@ -218,32 +222,34 @@ class Tet4(element.Element):
     def compute_mat_Me(self):
         self.__mat_Me = np.zeros((tet4_n_dofs, tet4_n_dofs))
         
+        self.__compute_jacobian()
+        
         counter = 0
         for g in self.get_gauss():
-            gauss_coords = g[0]
             gauss_weight = g[1]
-            self.__compute_jacobian(gauss_coords)
             self.__mat_Me += gauss_weight * self.get_rho() * self.__det_J * tet4_mats_EeTEe_gauss[counter] 
             counter += 1
             
     def compute_mat_Ke(self):
         self.__mat_Ke = np.zeros((tet4_n_dofs, tet4_n_dofs))
         
+        self.__compute_jacobian()
+        mat_B = np.dot(mat_G, np.dot(self.__mat_invJJJ, np.dot(mat_P, tet4_mat_De_gauss)))
+        
         for g in self.get_gauss():
             gauss_weight = g[1]
-            self.__compute_jacobian()
-            mat_B = np.dot(mat_G, np.dot(self.__mat_invJJJ, np.dot(mat_P, tet4_mat_De_gauss)))
             self.__mat_Ke += gauss_weight * self.__det_J * np.dot(mat_B.transpose(), np.dot(self.get_mat_C(), mat_B))
     
     def compute_mat_Me_mat_Ke(self):
         self.__mat_Me = np.zeros((tet4_n_dofs, tet4_n_dofs))
         self.__mat_Ke = np.zeros((tet4_n_dofs, tet4_n_dofs))
         
+        self.__compute_jacobian()
+        mat_B = np.dot(mat_G, np.dot(self.__mat_invJJJ, np.dot(mat_P, tet4_mat_De_gauss)))
+        
         counter = 0
         for g in self.get_gauss():
             gauss_weight = g[1]
-            self.__compute_jacobian()
-            mat_B = np.dot(mat_G, np.dot(self.__mat_invJJJ, np.dot(mat_P, tet4_mat_De_gauss)))
             self.__mat_Me += gauss_weight * self.get_rho() * self.__det_J * tet4_mats_EeTEe_gauss[counter]
             self.__mat_Ke += gauss_weight * self.__det_J * np.dot(mat_B.transpose(), np.dot(self.get_mat_C(), mat_B))
             counter += 1
@@ -253,3 +259,27 @@ class Tet4(element.Element):
     
     def get_mat_Ke(self):
         return self.__mat_Ke
+    
+    def compute_element_strain(self, vec_Ue):        
+        nodes_Ue = np.reshape(vec_Ue, (tet4_n_nodes, 3))
+        
+        old_nodes_coords = self.get_nodes_coords
+        new_nodes_coords = old_nodes_coords + nodes_Ue
+        
+        self.set_nodes_coords(new_nodes_coords)
+        
+        self.__compute_jacobian()
+        mat_B = np.dot(mat_G, np.dot(self.__mat_invJJJ, np.dot(mat_P, tet4_mat_De_gauss)))
+        
+        vec_strain = np.dot(mat_B, vec_Ue) * tet4_n_gauss
+        
+        return vec_strain
+    
+    def compute_element_stress(self, vec_Ue):        
+        vec_strain = self.compute_element_strain(vec_Ue)
+        vec_stress = np.dot(self.get_mat_C(), vec_strain)
+        
+        return vec_stress
+        
+
+            
