@@ -1,10 +1,10 @@
 # 3DFEM
-## Python 3D finite element library
+## Python 3D finite element code
 
-This python library for solving 3D structural problems using the finite element method.
+This python code for solving 3D structural problems using the finite element method.
 New features will be added over time.
 
-*This library has **NOT** been validated on reference cases yet.*
+*This code has **NOT** been validated on reference cases yet.*
 
 ## Requirements and dependencies
 * Python 3
