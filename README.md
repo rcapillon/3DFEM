@@ -42,7 +42,7 @@ New features will be added over time.
 ### Solvers
 * Modal analysis
 * Linear static analysis
-* Linear time-domain dynamics using the Newmark scheme and model reduction using the elastic modes
+* Linear time-domain dynamics using the Newmark scheme and a reduced-order model based on elastic modes
 
 ### Post-processing
 * Export of a deformed mesh to VTK format (PolyData legacy format)
