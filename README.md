@@ -97,7 +97,6 @@ New features will be added over time.
 
 ### Uncertainty Quantification
 * Typical Maximum Entropy-probability distributions for elastic coefficients (Young's modulus, Poisson's ratio, anisotropic coefficients) for **parametric uncertainties**
-* Algorithm for finding the Maximum Entropy distribution with arbitrary constraints for **parametric uncertainties**
 * Typical Maximum Entropy-probability distributions for mass, linear elastic stiffness, Rayleigh damping and linear viscoelastic damping matrices for **nonparametric uncertainties**
 * Monte Carlo method for uncertainty propagation with plotting of confidence intervals
 * Gaussian Kernel Density Estimation (GKDE) for the estimation of probability density functions of observable quantities
