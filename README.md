@@ -1,7 +1,7 @@
 # 3DFEM
 ## Python 3D finite element code
 
-This python code for solving 3D structural problems using the finite element method.
+This python code allows for solving 3D structural problems using the finite element method.
 New features will be added over time.
 
 *This code has **NOT** been validated on reference cases yet.*
