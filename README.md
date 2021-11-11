@@ -34,7 +34,7 @@ New features will be added over time.
 
 ### Forces
 * Nodal forces
-* Support for modulation of the initial force vector by a given function over timesteps in time-domain dynamical analyses
+* Support for modulation of the initial force vector by a given function over time steps or frequency steps in dynamical analyses
 
 ### Solvers
 * Modal analysis
