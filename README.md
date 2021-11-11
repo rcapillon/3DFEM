@@ -26,7 +26,7 @@ New features will be added over time.
 * Consistent mass matrix
 * Linear elastic stiffness matrix
 * Rayleigh damping matrix (linear combination of mass and stiffness matrices)
-* Support for zero-Dirichlet boundary conditions
+* Support only for zero-Dirichlet boundary conditions
 * Full Gauss quadrature scheme
 
 ### Reduced-Order Modeling
