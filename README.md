@@ -55,7 +55,7 @@ New features will be added over time.
 
 *First linear elastic mode of a clamped-clamped beam displayed in Paraview*
 
-# Time-domain dynamics
+### Time-domain dynamics
 
 ![Beam Time Dynamics](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_dynamics.gif)
 
