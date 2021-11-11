@@ -49,15 +49,15 @@ New features will be added over time.
 
 ## Examples of solutions
 
-![Alt Text](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_mode1.gif)
+![Beam Mode](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_mode1.gif)
 
 *First linear elastic mode of a clamped-clamped beam displayed in Paraview*
 
-![Alt Text](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_dynamics.gif)
+![Beam Time Dynamics](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_dynamics.gif)
 
 *Linear elastic cantilever beam with Rayleigh damping pulled up by a constant force on its free end, then released*
 
-![Alt Text](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/plate_dynamics.gif)
+![Plate Time Dynamics](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/plate_dynamics.gif)
 
 *Linear elastic plate with Rayleigh damping excited by a nodal force, on the center of the upper face, varying with a bell curve envelope*
 
