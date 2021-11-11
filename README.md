@@ -101,5 +101,4 @@ New features will be added over time.
 * Typical Maximum Entropy-probability distributions for mass, linear elastic stiffness, Rayleigh damping and linear viscoelastic damping matrices for **nonparametric uncertainties**
 * Monte Carlo method for uncertainty propagation with plotting of confidence intervals
 * Gaussian Kernel Density Estimation (GKDE) for the estimation of probability density functions of observable quantities
-* Statistical inverse problem-solving for optimization of a prior probability model's hyperparameters using data
 * Causal nonparametric probabilistic models (linear viscoelasticity)
