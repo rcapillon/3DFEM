@@ -49,9 +49,13 @@ New features will be added over time.
 
 ## Examples of solutions
 
+### Modal analysis
+
 ![Beam Mode](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_mode1.gif)
 
 *First linear elastic mode of a clamped-clamped beam displayed in Paraview*
+
+# Time-domain dynamics
 
 ![Beam Time Dynamics](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_dynamics.gif)
 
