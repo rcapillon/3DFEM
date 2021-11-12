@@ -94,6 +94,7 @@ New features will be added over time.
 
 ### Post-processing
 * Plotting of Frequency-Response Functions (FRF)
+* Plotting of modal coordinates at given step
 * Support for including element stress and strain components in the VTK files
 
 ### Uncertainty Quantification
