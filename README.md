@@ -58,17 +58,17 @@ New features will be added over time.
 *First linear elastic mode of a clamped-clamped beam displayed in Paraview*
 
 ### Frequency-domain dynamics
-
+<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_9280Hz.png" width=500>
 <img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf.png" width=500>
 
-*Frequency response function of a linear elastic plate excited by a nodal force at the center of the upper face (calculated at the same point)*
+*Linear elastic plate excited by a nodal force at the center of the upper face (deformed mesh and Frequency-Response Function calculated at the excitation point)*
 
 ### Time-domain dynamics
 
 <img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/plate_dynamics.gif" width=500>
 <img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_time_displacement.png" width=500>
 
-*Linear elastic plate excited by a nodal force at the center of the upper face (mesh deformation and vertical displacement at the excited point)*
+*Linear elastic plate excited by a nodal force at the center of the upper face (deformed mesh and vertical displacement at the excitation point)*
 
 <img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_dynamics.gif" width=500>
 
