@@ -80,6 +80,7 @@ New features will be added over time.
 * Arbitrary Dirichlet boundary conditions
 
 ### Reduced-Order Modeling
+* Support for specifying an arbitrary pre-computed reduced-order basis
 * Proper Orthogonal Decomposition (POD) for nonlinear problems
 
 ### Forces
