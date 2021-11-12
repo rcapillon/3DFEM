@@ -10,7 +10,7 @@
 
 import numpy as np
 
-class IsotropicElasticMaterial:
+class LinearIsotropicElasticMaterial:
     def __init__(self, rho, Y, nu):
         self.set_properties(rho, Y, nu)
         

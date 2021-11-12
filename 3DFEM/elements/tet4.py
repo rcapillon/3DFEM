@@ -11,7 +11,7 @@
 import numpy as np
 
 import importlib.util
-spec1 = importlib.util.spec_from_file_location("element", "./elements/element.py")
+spec1 = importlib.util.spec_from_file_location("element", "../elements/element.py")
 element = importlib.util.module_from_spec(spec1)
 spec1.loader.exec_module(element)
 

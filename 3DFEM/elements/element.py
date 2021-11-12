@@ -11,11 +11,11 @@
 import numpy as np
 
 import importlib.util
-spec1 = importlib.util.spec_from_file_location("materials", "./materials/materials.py")
+spec1 = importlib.util.spec_from_file_location("materials", "../materials/materials.py")
 materials = importlib.util.module_from_spec(spec1)
 spec1.loader.exec_module(materials)
 
-class Element(materials.IsotropicElasticMaterial):
+class Element(materials.LinearIsotropicElasticMaterial):
     def __init__(self, rho, Y, nu):
         super(Element, self).__init__(rho, Y, nu)
     

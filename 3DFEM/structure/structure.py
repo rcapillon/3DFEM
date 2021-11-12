@@ -12,7 +12,7 @@ import numpy as np
 import scipy.sparse
 
 import importlib.util
-spec1 = importlib.util.spec_from_file_location("mesh", "./mesh/mesh.py")
+spec1 = importlib.util.spec_from_file_location("mesh", "../mesh/mesh.py")
 mesh = importlib.util.module_from_spec(spec1)
 spec1.loader.exec_module(mesh)
 

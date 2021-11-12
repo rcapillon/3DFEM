@@ -10,6 +10,7 @@
 
 import numpy as np
 import copy
+import matplotlib.pyplot as plt
 
 def find_nodes_in_yzplane(points, x):
     ls_nodes = np.where(points[:,0] == x)[0].tolist()
@@ -27,9 +28,9 @@ def find_nodes_in_xyplane(points, z):
     return ls_nodes
 
 def find_nodes_with_coordinates(points, coords):    
-    node = np.where(((points[:,0] == coords[0]).astype(int) + (points[:,1] == coords[1]).astype(int) + (points[:,2] == coords[2]).astype(int)) == 3)[0].tolist()
+    nodes = np.where(((points[:,0] == coords[0]).astype(int) + (points[:,1] == coords[1]).astype(int) + (points[:,2] == coords[2]).astype(int)) == 3)[0].tolist()
     
-    return node
+    return nodes
 
 def find_nodes_in_yzplane_within_tolerance(points, x, tol):
     array_nodes = np.where(np.abs(points[:,0] - x) <= tol)[0].tolist()
@@ -47,9 +48,9 @@ def find_nodes_in_xyplane_within_tolerance(points, z, tol):
     return array_nodes
 
 def find_nodes_with_coordinates_within_tolerance(points, coords, tol):
-    node = np.where(((np.abs(points[:,0] - coords[0]) <= tol).astype(int) + (np.abs(points[:,1] - coords[1]) <= tol).astype(int) + (np.abs(points[:,2] - coords[2]) <= tol).astype(int)) == 3)[0].tolist()
+    nodes = np.where(((np.abs(points[:,0] - coords[0]) <= tol).astype(int) + (np.abs(points[:,1] - coords[1]) <= tol).astype(int) + (np.abs(points[:,2] - coords[2]) <= tol).astype(int)) == 3)[0].tolist()
     
-    return node
+    return nodes
 
 def export_mesh_to_vtk(file_name, mesh, n_points=None, n_faces=None, n_cols=None):
     file = open(file_name + ".vtk","w")
@@ -115,6 +116,22 @@ def export_mode_animation(file_name, mesh, mode, scale, n_frames):
         deformed_mesh.add_U_to_points(scale * np.sin(2 * np.pi * ii / n_frames) * mode)
         animation_frame_name = file_name + str(ii)
         export_mesh_to_vtk(animation_frame_name, deformed_mesh, n_points, n_faces, n_cols)
+        
+def export_U_on_mesh(file_name, mesh, vec_U, scale):
+    n_points = mesh.get_n_points()
+    
+    n_faces = 0
+    n_cols = 0
+
+    for element in mesh.get_elements_list():
+        element_faces = element.get_faces()
+        n_faces += len(element_faces)
+        for face in element_faces:
+            n_cols += 1 + len(face)
+    
+    deformed_mesh = copy.deepcopy(mesh)
+    deformed_mesh.add_U_to_points(scale * vec_U)
+    export_mesh_to_vtk(file_name, deformed_mesh, n_points, n_faces, n_cols)
     
 def export_U_newmark_animation(file_name, mesh, mat_U, scale):
     n_frames = mat_U.shape[1]
@@ -136,3 +153,29 @@ def export_U_newmark_animation(file_name, mesh, mat_U, scale):
         deformed_mesh.add_U_to_points(scale * U)
         animation_frame_name = file_name + str(ii)
         export_mesh_to_vtk(animation_frame_name, deformed_mesh, n_points, n_faces, n_cols)
+        
+def plot_observed_U(file_name, solver, x_name="", y_name="", plot_type="linear"):
+    vec_x = solver.get_x_axis()
+    ls_dofs_observed = solver.get_structure().get_mesh().get_observed_dofs()
+    mat_U = solver.get_mat_U_observed()
+    
+    for ii in range(len(ls_dofs_observed)):
+        dof_number = ls_dofs_observed[ii]
+        image_name = file_name + str(dof_number)
+        
+        vec_U = mat_U[ii, :]
+        
+        fig, ax = plt.subplots()
+        if plot_type == "linear":
+            ax.plot(vec_x, vec_U)
+        elif plot_type == "semilogy":
+            ax.semilogy(vec_x, vec_U)
+        elif plot_type == "semilogx":
+            ax.semilogx(vec_x, vec_U)
+        elif plot_type == "loglog":
+            ax.loglog(vec_x, vec_U)
+        
+        ax.set(xlabel = x_name, ylabel = y_name, title="DOF " + str(dof_number))
+        ax.grid()
+    
+        fig.savefig(image_name + ".png")

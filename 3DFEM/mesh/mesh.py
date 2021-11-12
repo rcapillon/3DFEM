@@ -12,7 +12,7 @@ import numpy as np
 import scipy.spatial
 
 import importlib.util
-spec1 = importlib.util.spec_from_file_location("tet4", "./elements/tet4.py")
+spec1 = importlib.util.spec_from_file_location("tet4", "../elements/tet4.py")
 tet4 = importlib.util.module_from_spec(spec1)
 spec1.loader.exec_module(tet4)
 
@@ -23,6 +23,8 @@ class Mesh:
         self.__points = points
         self.__ls_dofs_dir = [] # zero-dirichlet condition
         self.__ls_dofs_free = [ii for ii in range(self.__n_total_dofs)]
+        self.__ls_dofs_observed = []
+        self.__n_dofs_observed = 0
     
     def set_elements_list(self, elem_list):
         self.__n_elements = len(elem_list)
@@ -94,3 +96,14 @@ class Mesh:
     
     def get_free_dofs(self):
         return self.__ls_dofs_free
+    
+    def set_observed_dofs(self, ls_dofs_observed):
+        self.__ls_dofs_observed = ls_dofs_observed
+        self.__n_dofs_observed = len(ls_dofs_observed)
+        
+    def add_observed_dofs(self, dof_observed):
+        self.__ls_dofs_observed.append(dof_observed)
+        self.__n_dofs_observed += 1
+        
+    def get_observed_dofs(self):
+        return self.__ls_dofs_observed
