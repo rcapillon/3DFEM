@@ -53,23 +53,23 @@ New features will be added over time.
 
 ### Modal analysis
 
-![Beam Mode](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_mode1.gif)
+![Beam Mode](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_mode1.gif | width=250)
 
 *First linear elastic mode of a clamped-clamped beam displayed in Paraview*
 
 ### Frequency-domain dynamics
 
-![Plate FRF](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf.png)
+![Plate FRF](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf.png | width=250)
 
 *Frequency response function of a linear elastic plate excited by a nodal force at the center of the upper face (calculated at the same point)*
 
 ### Time-domain dynamics
 
-![Plate Time Dynamics](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/plate_dynamics.gif)![Plate Time Trajectory](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_time_displacement.png)
+![Plate Time Dynamics](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/plate_dynamics.gif | width=250)![Plate Time Trajectory](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_time_displacement.png | width=250)
 
 *Linear elastic plate excited by a nodal force at the center of the upper face (vertical displacement of the excited point plotted on the right)*
 
-![Beam Time Dynamics](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_dynamics.gif)
+![Beam Time Dynamics](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_dynamics.gif | width=250)
 
 *Linear elastic cantilever beam with Rayleigh damping pulled up by a constant force on its free end, then released*
 
