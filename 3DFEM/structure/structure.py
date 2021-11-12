@@ -120,6 +120,12 @@ class Structure:
         self.__alphaM = alphaM
         self.__alphaK = alphaK
         
+    def get_alphaM(self):
+        return self.__alphaM
+    
+    def get_alphaK(self):
+        return self.__alphaK
+        
     def compute_D(self):
         self.__mat_D = self.__alphaM * self.__mat_M + self.__alphaK * self.__mat_K
         

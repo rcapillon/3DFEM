@@ -11,9 +11,11 @@
 import time
 import numpy as np
 
-import functions as fun
-
 import importlib.util
+spec0 = importlib.util.spec_from_file_location("functions", "../functions.py")
+fun = importlib.util.module_from_spec(spec0)
+spec0.loader.exec_module(fun)
+
 spec1 = importlib.util.spec_from_file_location("mesh", "../mesh/mesh.py")
 mesh = importlib.util.module_from_spec(spec1)
 spec1.loader.exec_module(mesh)
@@ -42,9 +44,9 @@ computation_time_start = time.time()
 
 print("Defining frequency band of analysis and sampling rate...")
 
-f0 = 5000
-fmax = 10000
-n_freqsteps = 5000
+f0 = 8000
+fmax = 16000
+n_freqsteps = 8000
 
 vec_freq = np.linspace(f0, fmax, n_freqsteps)
 
@@ -68,13 +70,13 @@ print("Defining geometry, mesh and Dirichlet conditions...")
 
 L_x = 1e0
 L_y = 1e0
-L_z = 2e-1
+L_z = 1e-1
 
 # mesh
 
-Nn_x = 41
-Nn_y = 41
-Nn_z = 10
+Nn_x = 31
+Nn_y = 31
+Nn_z = 4
 
 line_x = np.linspace(0, L_x, Nn_x)
 line_y = np.linspace(0, L_y, Nn_y)
@@ -97,7 +99,7 @@ plate_mesh.delaunay3D_from_points(rho, Y, nu)
 
 # Observed DOFs
 
-observed_node_coords = np.array([20*L_x/(Nn_x - 1), 20*L_y/(Nn_y - 1), L_z])
+observed_node_coords = np.array([8*L_x/(Nn_x - 1), 8*L_y/(Nn_y - 1), L_z])
 observed_node_number = fun.find_nodes_with_coordinates(plate_mesh.get_points(), observed_node_coords)[0]
 observed_dof_number = observed_node_number * 3 + 2
 
@@ -108,20 +110,20 @@ plate_mesh.set_observed_dofs(ls_dofs_observed)
 # Dirichlet conditions
 
 ls_nodes_dir_1 = fun.find_nodes_in_xyplane(plate_mesh.get_points(), 0)
-ls_nodes_dir_2 = fun.find_nodes_in_yzplane(plate_mesh.get_points(), 0)
-ls_nodes_dir_3 = fun.find_nodes_in_yzplane(plate_mesh.get_points(), L_x)
-ls_nodes_dir_4 = fun.find_nodes_in_xzplane(plate_mesh.get_points(), 0)
-ls_nodes_dir_5 = fun.find_nodes_in_xzplane(plate_mesh.get_points(), L_y)
+# ls_nodes_dir_2 = fun.find_nodes_in_yzplane(plate_mesh.get_points(), 0)
+# ls_nodes_dir_3 = fun.find_nodes_in_yzplane(plate_mesh.get_points(), L_x)
+# ls_nodes_dir_4 = fun.find_nodes_in_xzplane(plate_mesh.get_points(), 0)
+# ls_nodes_dir_5 = fun.find_nodes_in_xzplane(plate_mesh.get_points(), L_y)
 
-ls_nodes_dir_x = ls_nodes_dir_2 + ls_nodes_dir_3
-ls_nodes_dir_y = ls_nodes_dir_4 + ls_nodes_dir_5
+# ls_nodes_dir_x = ls_nodes_dir_2 + ls_nodes_dir_3
+# ls_nodes_dir_y = ls_nodes_dir_4 + ls_nodes_dir_5
 ls_nodes_dir_z = ls_nodes_dir_1
 
-ls_dofs_dir_x = [node * 3 for node in ls_nodes_dir_x]
-ls_dofs_dir_y = [node * 3 + 1 for node in ls_nodes_dir_y]
+ls_dofs_dir_x = [node * 3 for node in ls_nodes_dir_z]
+ls_dofs_dir_y = [node * 3 + 1 for node in ls_nodes_dir_z]
 ls_dofs_dir_z = [node * 3 + 2 for node in ls_nodes_dir_z]
 
-ls_dofs_dir = np.unique(ls_dofs_dir_z + ls_dofs_dir_x + ls_dofs_dir_y)
+ls_dofs_dir = np.unique(ls_dofs_dir_x + ls_dofs_dir_y + ls_dofs_dir_z)
 plate_mesh.set_dirichlet(ls_dofs_dir)
 
 ####
@@ -133,7 +135,7 @@ print("Defining structure...")
 plate_structure = structure.Structure(plate_mesh)
 
 alphaM = 0
-alphaK = 1e-7
+alphaK = 4e-8
 plate_structure.set_rayleigh(alphaM, alphaK)
 
 ####
@@ -160,13 +162,13 @@ print("Defining solver...")
 
 plate_solver = solver.Solver(plate_structure, plate_force)
 
-n_modes = 300
+n_modes = 100
 
 print("Running solver...")
 
 solver_subtime_start = time.time()
 
-plate_solver.linear_frequency_solver(vec_freq, n_modes, verbose=False)
+plate_solver.linear_diagonal_frequency_solver(vec_freq, n_modes, verbose=False)
 
 solver_subtime_end = time.time()
 
@@ -181,11 +183,11 @@ print("Post-processing...")
 file_name_frf = "./freqdomain_plate_frf"
 fun.plot_observed_U(file_name_frf, plate_solver, x_name="frequency (Hz)", y_name="Displacement amplitude (m)", plot_type="semilogy")
 
-observed_freq_index = 4280
+observed_freq_index = 7000
 vec_U_step = plate_solver.get_vec_absU_step(observed_freq_index)
 
 file_name_deformedmesh = "./freqdomain_plate_deformedmesh"
-scale = 1e9
+scale = 2.5e8
 fun.export_U_on_mesh(file_name_deformedmesh, plate_mesh, vec_U_step, scale)
 
 ####

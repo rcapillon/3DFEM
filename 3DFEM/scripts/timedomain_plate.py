@@ -11,7 +11,10 @@
 import time
 import numpy as np
 
-import functions as fun
+import importlib.util
+spec0 = importlib.util.spec_from_file_location("functions", "../functions.py")
+fun = importlib.util.module_from_spec(spec0)
+spec0.loader.exec_module(fun)
 
 import importlib.util
 spec1 = importlib.util.spec_from_file_location("mesh", "../mesh/mesh.py")
@@ -42,9 +45,9 @@ computation_time_start = time.time()
 
 print("Defining time interval of analysis and sampling rate...")
 
-n_timesteps = 5000
+n_timesteps = 2000
 t_0 = 0.0
-t_max = 5e-4
+t_max = 1e-4
 
 vec_t = np.linspace(t_0, t_max, n_timesteps)
 
@@ -68,13 +71,13 @@ print("Defining geometry, mesh and Dirichlet conditions...")
 
 L_x = 1e0
 L_y = 1e0
-L_z = 2e-1
+L_z = 1e-1
 
 # mesh
 
-Nn_x = 41
-Nn_y = 41
-Nn_z = 10
+Nn_x = 31
+Nn_y = 31
+Nn_z = 4
 
 line_x = np.linspace(0, L_x, Nn_x)
 line_y = np.linspace(0, L_y, Nn_y)
@@ -97,7 +100,7 @@ plate_mesh.delaunay3D_from_points(rho, Y, nu)
 
 # Observed DOFs
 
-observed_node_coords = np.array([20*L_x/(Nn_x - 1), 20*L_y/(Nn_y - 1), L_z])
+observed_node_coords = np.array([8*L_x/(Nn_x - 1), 8*L_y/(Nn_y - 1), L_z])
 observed_node_number = fun.find_nodes_with_coordinates(plate_mesh.get_points(), observed_node_coords)[0]
 observed_dof_number = observed_node_number * 3 + 2
 
@@ -108,20 +111,20 @@ plate_mesh.set_observed_dofs(ls_dofs_observed)
 # Dirichlet conditions
 
 ls_nodes_dir_1 = fun.find_nodes_in_xyplane(plate_mesh.get_points(), 0)
-ls_nodes_dir_2 = fun.find_nodes_in_yzplane(plate_mesh.get_points(), 0)
-ls_nodes_dir_3 = fun.find_nodes_in_yzplane(plate_mesh.get_points(), L_x)
-ls_nodes_dir_4 = fun.find_nodes_in_xzplane(plate_mesh.get_points(), 0)
-ls_nodes_dir_5 = fun.find_nodes_in_xzplane(plate_mesh.get_points(), L_y)
+# ls_nodes_dir_2 = fun.find_nodes_in_yzplane(plate_mesh.get_points(), 0)
+# ls_nodes_dir_3 = fun.find_nodes_in_yzplane(plate_mesh.get_points(), L_x)
+# ls_nodes_dir_4 = fun.find_nodes_in_xzplane(plate_mesh.get_points(), 0)
+# ls_nodes_dir_5 = fun.find_nodes_in_xzplane(plate_mesh.get_points(), L_y)
 
-ls_nodes_dir_x = ls_nodes_dir_2 + ls_nodes_dir_3
-ls_nodes_dir_y = ls_nodes_dir_4 + ls_nodes_dir_5
+# ls_nodes_dir_x = ls_nodes_dir_2 + ls_nodes_dir_3
+# ls_nodes_dir_y = ls_nodes_dir_4 + ls_nodes_dir_5
 ls_nodes_dir_z = ls_nodes_dir_1
 
-ls_dofs_dir_x = [node * 3 for node in ls_nodes_dir_x]
-ls_dofs_dir_y = [node * 3 + 1 for node in ls_nodes_dir_y]
+ls_dofs_dir_x = [node * 3 for node in ls_nodes_dir_z]
+ls_dofs_dir_y = [node * 3 + 1 for node in ls_nodes_dir_z]
 ls_dofs_dir_z = [node * 3 + 2 for node in ls_nodes_dir_z]
 
-ls_dofs_dir = np.unique(ls_dofs_dir_z + ls_dofs_dir_x + ls_dofs_dir_y)
+ls_dofs_dir = np.unique(ls_dofs_dir_x + ls_dofs_dir_y + ls_dofs_dir_z)
 plate_mesh.set_dirichlet(ls_dofs_dir)
 
 ####
@@ -133,7 +136,7 @@ print("Defining structure...")
 plate_structure = structure.Structure(plate_mesh)
 
 alphaM = 0
-alphaK = 1e-7
+alphaK = 4e-8
 plate_structure.set_rayleigh(alphaM, alphaK)
 
 plate_structure.set_U0L()
@@ -151,12 +154,12 @@ plate_force = force.Force(plate_mesh)
 force_coords = np.array([L_x/2, L_y/2, L_z])
 ls_nodes_force = fun.find_nodes_with_coordinates(plate_mesh.get_points(), force_coords)
 
-nodal_force_vector = np.array([0, 0, -5e9])
+nodal_force_vector = np.array([0, 0, -1.5e10])
 plate_force.add_nodal_forces_t0(ls_nodes_force, nodal_force_vector)
 
 vec_variation = np.zeros((n_timesteps,))
 
-freq = 9280
+freq = 15000
 
 vec_t = np.linspace(t_0, t_max, n_timesteps)
 vec_variation[:] = np.power(np.sin(2 * np.pi * freq * vec_t), 2)
@@ -176,13 +179,13 @@ plate_solver = solver.Solver(plate_structure, plate_force)
 beta1 = 1.0/2
 beta2 = 1.0/2
 
-n_modes = 300
+n_modes = 100
 
 print("Running solver...")
 
 solver_subtime_start = time.time()
 
-plate_solver.linear_newmark_solver(beta1, beta2, vec_t, n_modes, verbose=False)
+plate_solver.linear_diagonal_newmark_solver(beta1, beta2, vec_t, n_modes, verbose=False)
 
 solver_subtime_end = time.time()
 
