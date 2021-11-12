@@ -59,14 +59,14 @@ New features will be added over time.
 
 ### Frequency-domain dynamics
 <img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_15000Hz.png" width=500>
-<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf.png" width=500>
+<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf_dof9419.png" width=500>
 
 *Linear elastic plate excited by a nodal force at the center of the upper face (deformed mesh and Frequency-Response Function calculated at the excitation point)*
 
 ### Time-domain dynamics
 
 <img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/plate_dynamics.gif" width=500>
-<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_time_displacement.png" width=500>
+<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_time_displacement_dof9419.png" width=500>
 
 *Linear elastic plate excited by a nodal force at the center of the upper face (deformed mesh and vertical displacement at the excitation point)*
 
