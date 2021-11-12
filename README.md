@@ -39,9 +39,11 @@ New features will be added over time.
 ### Solvers
 * Modal analysis
 * Linear static analysis
+* Linear frequency-domain dynamics using a reduced-order model based on elastic modes
 * Linear time-domain dynamics using the Newmark scheme and a reduced-order model based on elastic modes
 
 ### Post-processing
+* Plotting of Frequency-Response Functions (FRF), time trajectories
 * Export of a deformed mesh to VTK format (PolyData legacy format)
 * Export of a series of deformed meshes to VTK format for animations (for visualizing elastic modes, or deformations in time-domain dynamical analyses)
 
@@ -55,15 +57,21 @@ New features will be added over time.
 
 *First linear elastic mode of a clamped-clamped beam displayed in Paraview*
 
+### Frequency-domain dynamics
+
+![Plate FRF](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf.png)
+
+*Frequency response function of a linear elastic plate excited by a nodal force at the center of the upper face (calculated at the same point)*
+
 ### Time-domain dynamics
+
+![Plate Time Dynamics](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/plate_dynamics.gif)![Plate Time Trajectory](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_time_displacement.png)
+
+*Linear elastic plate excited by a nodal force at the center of the upper face (vertical displacement of the excited point plotted on the right)*
 
 ![Beam Time Dynamics](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_dynamics.gif)
 
 *Linear elastic cantilever beam with Rayleigh damping pulled up by a constant force on its free end, then released*
-
-![Plate Time Dynamics](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/plate_dynamics.gif)
-
-*Linear elastic plate with Rayleigh damping excited by a nodal force, on the center of the upper face, varying with a bell curve envelope*
 
 ----
 
@@ -88,12 +96,10 @@ New features will be added over time.
 * Surface forces
 
 ### Solvers
-* Frequency-domain dynamical analysis
 * Newton-Raphson method for geometrically nonlinear elastostatics and elastodynamics
 * Arc-length method for geometrically nonlinear elastostatics and elastodynamics with strong nonlinearities (e.g. post-buckling analysis)
 
 ### Post-processing
-* Plotting of Frequency-Response Functions (FRF)
 * Plotting of modal coordinates at given step
 * Support for including element stress and strain components in the VTK files
 
