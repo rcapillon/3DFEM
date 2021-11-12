@@ -4,10 +4,3 @@
 *.out
 *.toc
 *.log
-
-# animations and images
-/3DFEM/animations
-/3DFEM/images
-
-# test script file
-/3DFEM/main.py
