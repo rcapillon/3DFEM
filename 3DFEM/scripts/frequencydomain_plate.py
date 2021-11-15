@@ -44,9 +44,9 @@ computation_time_start = time.time()
 
 print("Defining frequency band of analysis and sampling rate...")
 
-f0 = 8000
-fmax = 16000
-n_freqsteps = 8000
+f0 = 12500
+fmax = 25000
+n_freqsteps = 12500
 
 vec_freq = np.linspace(f0, fmax, n_freqsteps)
 
@@ -74,9 +74,9 @@ L_z = 1e-1
 
 # mesh
 
-Nn_x = 31
-Nn_y = 31
-Nn_z = 4
+Nn_x = 61
+Nn_y = 61
+Nn_z = 7
 
 line_x = np.linspace(0, L_x, Nn_x)
 line_y = np.linspace(0, L_y, Nn_y)
@@ -99,28 +99,32 @@ plate_mesh.delaunay3D_from_points(rho, Y, nu)
 
 # Observed DOFs
 
-observed_node_coords = np.array([8*L_x/(Nn_x - 1), 8*L_y/(Nn_y - 1), L_z])
-observed_node_number = fun.find_nodes_with_coordinates(plate_mesh.get_points(), observed_node_coords)[0]
-observed_dof_number = observed_node_number * 3 + 2
+observed_node1_coords = np.array([15*L_x/(Nn_x - 1), 15*L_y/(Nn_y - 1), L_z])
+observed_node1_number = fun.find_nodes_with_coordinates(plate_mesh.get_points(), observed_node1_coords)[0]
+observed_dof1_number = observed_node1_number * 3 + 2
 
-ls_dofs_observed = [observed_dof_number]
+observed_node2_coords = np.array([30*L_x/(Nn_x - 1), 30*L_y/(Nn_y - 1), L_z])
+observed_node2_number = fun.find_nodes_with_coordinates(plate_mesh.get_points(), observed_node2_coords)[0]
+observed_dof2_number = observed_node2_number * 3 + 2
+
+ls_dofs_observed = [observed_dof1_number, observed_dof2_number]
 
 plate_mesh.set_observed_dofs(ls_dofs_observed)
 
 # Dirichlet conditions
 
 ls_nodes_dir_1 = fun.find_nodes_in_xyplane(plate_mesh.get_points(), 0)
-# ls_nodes_dir_2 = fun.find_nodes_in_yzplane(plate_mesh.get_points(), 0)
-# ls_nodes_dir_3 = fun.find_nodes_in_yzplane(plate_mesh.get_points(), L_x)
-# ls_nodes_dir_4 = fun.find_nodes_in_xzplane(plate_mesh.get_points(), 0)
-# ls_nodes_dir_5 = fun.find_nodes_in_xzplane(plate_mesh.get_points(), L_y)
+ls_nodes_dir_2 = fun.find_nodes_in_yzplane(plate_mesh.get_points(), 0)
+ls_nodes_dir_3 = fun.find_nodes_in_yzplane(plate_mesh.get_points(), L_x)
+ls_nodes_dir_4 = fun.find_nodes_in_xzplane(plate_mesh.get_points(), 0)
+ls_nodes_dir_5 = fun.find_nodes_in_xzplane(plate_mesh.get_points(), L_y)
 
-# ls_nodes_dir_x = ls_nodes_dir_2 + ls_nodes_dir_3
-# ls_nodes_dir_y = ls_nodes_dir_4 + ls_nodes_dir_5
-ls_nodes_dir_z = ls_nodes_dir_1
+ls_nodes_dir_x = ls_nodes_dir_1 + ls_nodes_dir_2 + ls_nodes_dir_3 + ls_nodes_dir_4 + ls_nodes_dir_5
+ls_nodes_dir_y = ls_nodes_dir_1 + ls_nodes_dir_2 + ls_nodes_dir_3 + ls_nodes_dir_4 + ls_nodes_dir_5
+ls_nodes_dir_z = ls_nodes_dir_1 + ls_nodes_dir_2 + ls_nodes_dir_3 + ls_nodes_dir_4 + ls_nodes_dir_5
 
-ls_dofs_dir_x = [node * 3 for node in ls_nodes_dir_z]
-ls_dofs_dir_y = [node * 3 + 1 for node in ls_nodes_dir_z]
+ls_dofs_dir_x = [node * 3 for node in ls_nodes_dir_x]
+ls_dofs_dir_y = [node * 3 + 1 for node in ls_nodes_dir_y]
 ls_dofs_dir_z = [node * 3 + 2 for node in ls_nodes_dir_z]
 
 ls_dofs_dir = np.unique(ls_dofs_dir_x + ls_dofs_dir_y + ls_dofs_dir_z)
@@ -135,7 +139,7 @@ print("Defining structure...")
 plate_structure = structure.Structure(plate_mesh)
 
 alphaM = 0
-alphaK = 4e-8
+alphaK = 4e-7
 plate_structure.set_rayleigh(alphaM, alphaK)
 
 ####
@@ -162,7 +166,7 @@ print("Defining solver...")
 
 plate_solver = solver.Solver(plate_structure, plate_force)
 
-n_modes = 100
+n_modes = 300
 
 print("Running solver...")
 
@@ -181,14 +185,25 @@ print("Solver sub-time: ", np.round_(solver_subtime_end - solver_subtime_start, 
 print("Post-processing...")
 
 file_name_frf = "./freqdomain_plate_frf"
-fun.plot_observed_U(file_name_frf, plate_solver, x_name="frequency (Hz)", y_name="Displacement amplitude (m)", plot_type="semilogy")
+fun.plot_observed_U(file_name_frf, plate_solver, x_name="Frequency (Hz)", y_name="Complex displacement amplitude (m)", plot_type="semilogy")
 
-observed_freq_index = 7000
-vec_U_step = plate_solver.get_vec_absU_step(observed_freq_index)
+observed_freq0_index = 15500 - 12500
+observed_freq1_index = 16250 - 12500
+observed_freq2_index = 17000 - 12500
 
-file_name_deformedmesh = "./freqdomain_plate_deformedmesh"
-scale = 2.5e8
-fun.export_U_on_mesh(file_name_deformedmesh, plate_mesh, vec_U_step, scale)
+vec_U0_step = plate_solver.get_vec_absU_step(observed_freq0_index)
+vec_U1_step = plate_solver.get_vec_absU_step(observed_freq1_index)
+vec_U2_step = plate_solver.get_vec_absU_step(observed_freq2_index)
+
+file_name_deformedmesh0 = "./freqdomain_plate_deformedmesh_15500Hz"
+scale = 2e9
+fun.export_U_on_mesh(file_name_deformedmesh0, plate_mesh, vec_U0_step, scale)
+file_name_deformedmesh1 = "./freqdomain_plate_deformedmesh_16250Hz"
+scale = 2e9
+fun.export_U_on_mesh(file_name_deformedmesh1, plate_mesh, vec_U1_step, scale)
+file_name_deformedmesh2 = "./freqdomain_plate_deformedmesh_17000Hz"
+scale = 2e9
+fun.export_U_on_mesh(file_name_deformedmesh2, plate_mesh, vec_U2_step, scale)
 
 ####
 # end

@@ -47,7 +47,7 @@ print("Defining time interval of analysis and sampling rate...")
 
 n_timesteps = 2000
 t_0 = 0.0
-t_max = 1e-4
+t_max = 8e-4
 
 vec_t = np.linspace(t_0, t_max, n_timesteps)
 
@@ -75,9 +75,9 @@ L_z = 1e-1
 
 # mesh
 
-Nn_x = 31
-Nn_y = 31
-Nn_z = 4
+Nn_x = 61
+Nn_y = 61
+Nn_z = 7
 
 line_x = np.linspace(0, L_x, Nn_x)
 line_y = np.linspace(0, L_y, Nn_y)
@@ -100,28 +100,32 @@ plate_mesh.delaunay3D_from_points(rho, Y, nu)
 
 # Observed DOFs
 
-observed_node_coords = np.array([8*L_x/(Nn_x - 1), 8*L_y/(Nn_y - 1), L_z])
-observed_node_number = fun.find_nodes_with_coordinates(plate_mesh.get_points(), observed_node_coords)[0]
-observed_dof_number = observed_node_number * 3 + 2
+observed_node1_coords = np.array([15*L_x/(Nn_x - 1), 15*L_y/(Nn_y - 1), L_z])
+observed_node1_number = fun.find_nodes_with_coordinates(plate_mesh.get_points(), observed_node1_coords)[0]
+observed_dof1_number = observed_node1_number * 3 + 2
 
-ls_dofs_observed = [observed_dof_number]
+observed_node2_coords = np.array([30*L_x/(Nn_x - 1), 30*L_y/(Nn_y - 1), L_z])
+observed_node2_number = fun.find_nodes_with_coordinates(plate_mesh.get_points(), observed_node2_coords)[0]
+observed_dof2_number = observed_node2_number * 3 + 2
+
+ls_dofs_observed = [observed_dof1_number, observed_dof2_number]
 
 plate_mesh.set_observed_dofs(ls_dofs_observed)
 
 # Dirichlet conditions
 
 ls_nodes_dir_1 = fun.find_nodes_in_xyplane(plate_mesh.get_points(), 0)
-# ls_nodes_dir_2 = fun.find_nodes_in_yzplane(plate_mesh.get_points(), 0)
-# ls_nodes_dir_3 = fun.find_nodes_in_yzplane(plate_mesh.get_points(), L_x)
-# ls_nodes_dir_4 = fun.find_nodes_in_xzplane(plate_mesh.get_points(), 0)
-# ls_nodes_dir_5 = fun.find_nodes_in_xzplane(plate_mesh.get_points(), L_y)
+ls_nodes_dir_2 = fun.find_nodes_in_yzplane(plate_mesh.get_points(), 0)
+ls_nodes_dir_3 = fun.find_nodes_in_yzplane(plate_mesh.get_points(), L_x)
+ls_nodes_dir_4 = fun.find_nodes_in_xzplane(plate_mesh.get_points(), 0)
+ls_nodes_dir_5 = fun.find_nodes_in_xzplane(plate_mesh.get_points(), L_y)
 
-# ls_nodes_dir_x = ls_nodes_dir_2 + ls_nodes_dir_3
-# ls_nodes_dir_y = ls_nodes_dir_4 + ls_nodes_dir_5
-ls_nodes_dir_z = ls_nodes_dir_1
+ls_nodes_dir_x = ls_nodes_dir_1 + ls_nodes_dir_2 + ls_nodes_dir_3 + ls_nodes_dir_4 + ls_nodes_dir_5
+ls_nodes_dir_y = ls_nodes_dir_1 + ls_nodes_dir_2 + ls_nodes_dir_3 + ls_nodes_dir_4 + ls_nodes_dir_5
+ls_nodes_dir_z = ls_nodes_dir_1 + ls_nodes_dir_2 + ls_nodes_dir_3 + ls_nodes_dir_4 + ls_nodes_dir_5
 
-ls_dofs_dir_x = [node * 3 for node in ls_nodes_dir_z]
-ls_dofs_dir_y = [node * 3 + 1 for node in ls_nodes_dir_z]
+ls_dofs_dir_x = [node * 3 for node in ls_nodes_dir_x]
+ls_dofs_dir_y = [node * 3 + 1 for node in ls_nodes_dir_y]
 ls_dofs_dir_z = [node * 3 + 2 for node in ls_nodes_dir_z]
 
 ls_dofs_dir = np.unique(ls_dofs_dir_x + ls_dofs_dir_y + ls_dofs_dir_z)
@@ -136,7 +140,7 @@ print("Defining structure...")
 plate_structure = structure.Structure(plate_mesh)
 
 alphaM = 0
-alphaK = 4e-8
+alphaK = 4e-7
 plate_structure.set_rayleigh(alphaM, alphaK)
 
 plate_structure.set_U0L()
@@ -154,15 +158,21 @@ plate_force = force.Force(plate_mesh)
 force_coords = np.array([L_x/2, L_y/2, L_z])
 ls_nodes_force = fun.find_nodes_with_coordinates(plate_mesh.get_points(), force_coords)
 
-nodal_force_vector = np.array([0, 0, -1.5e10])
+nodal_force_vector = np.array([0, 0, -1.5e9])
 plate_force.add_nodal_forces_t0(ls_nodes_force, nodal_force_vector)
 
 vec_variation = np.zeros((n_timesteps,))
 
-freq = 15000
+freq0 = 15500
+freq1 = 16250
+freq2 = 17000
+
+amp0 = 1
+amp1 = 1
+amp2 = 1
 
 vec_t = np.linspace(t_0, t_max, n_timesteps)
-vec_variation[:] = np.power(np.sin(2 * np.pi * freq * vec_t), 2)
+vec_variation[:] = amp0 * np.sin(2 * np.pi * freq0 * vec_t) + amp1 * np.sin(2 * np.pi * freq1 * vec_t) + amp2 * np.sin(2 * np.pi * freq2 * vec_t)
 
 plate_force.set_F_variation(vec_variation)
 
@@ -179,7 +189,7 @@ plate_solver = solver.Solver(plate_structure, plate_force)
 beta1 = 1.0/2
 beta2 = 1.0/2
 
-n_modes = 100
+n_modes = 300
 
 print("Running solver...")
 
@@ -198,7 +208,7 @@ print("Solver sub-time: ", np.round_(solver_subtime_end - solver_subtime_start, 
 print("Post-processing...")
 
 file_name_plot = "./timedomain_plate_plot"
-fun.plot_observed_U(file_name_plot, plate_solver, x_name="time (s)", y_name="Displacement (m)", plot_type="linear")
+fun.plot_observed_U(file_name_plot, plate_solver, x_name="Time (s)", y_name="Displacement (m)", plot_type="linear")
 
 mat_U = plate_solver.get_mat_U()
 
