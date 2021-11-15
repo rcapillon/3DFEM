@@ -53,26 +53,37 @@ New features will be added over time.
 
 ### Modal analysis
 
-<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_mode1.gif" width=500>
+*First linear elastic mode of a clamped-clamped beam*
 
-*First linear elastic mode of a clamped-clamped beam displayed in Paraview*
+Deformed mesh animation
+:-----------------------------------------------------------------------------------:
+ ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_mode1.gif)
 
 ### Frequency-domain dynamics
-<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_15000Hz.png" width=500>
-<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf_dof9419.png" width=500>
 
-*Linear elastic plate excited by a nodal force at the center of the upper face (deformed mesh at 15kHz and Frequency-Response Function calculated at an observed DOF)*
+*Linear elastic plate excited by a nodal force at the center of the upper face*
+
+Deformed mesh at 15500 Hz                                                                     |  Deformed mesh at 16250 Hz                                                                     |  Deformed mesh at 17000 Hz
+:--------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------:
+ ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_15500Hz.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_16250Hz.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_17000Hz.png)
+
+FRF at excitated DOF                                                             |  FRF at observed point                                                                   
+:-------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------:
+ ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf2.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf1.png)
 
 ### Time-domain dynamics
 
-<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/plate_dynamics.gif" width=500>
-<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_time_displacement_dof9419.png" width=500>
+*Linear elastic plate excited by 3 sinusoidal nodal forces (15500, 16250 and 17000 Hz) at the center of the upper face*
 
-*Linear elastic plate excited by a 15kHz sinusoidal nodal force at the center of the upper face (deformed mesh and displacement at an observed DOF)*
-
-<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_dynamics.gif" width=500>
+Deformed mesh animation                                                                 |  Observed DOF 1                                                                                        |  Observed DOF 2
+:---------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------:
+ ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/plate_dynamics.gif) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_time_displacement2.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_time_displacement1.png)
 
 *Linear elastic cantilever beam with Rayleigh damping pulled up by a constant force on its free end, then released*
+
+Deformed mesh animation
+:--------------------------------------------------------------------------------------:
+ ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_dynamics.gif)
 
 ----
 
