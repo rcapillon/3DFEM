@@ -42,8 +42,8 @@ New features will be added over time.
 * Linear frequency-domain dynamics using a reduced-order model based on elastic modes
 * Linear time-domain dynamics using the Newmark scheme and a reduced-order model based on elastic modes
 * Uncertainty Quantification:
- - **Nonparametric** probabilistic models for reduced matrices for linear frequency-domain dynamics
- - Direct Monte Carlo method for uncertainty propagation
+  - **Nonparametric** probabilistic models for reduced matrices for linear frequency-domain dynamics
+  - Direct Monte Carlo method for uncertainty propagation
 
 ### Post-processing
 * Plotting of Frequency-Response Functions (FRF), time trajectories
@@ -119,8 +119,8 @@ Deformed mesh animation
 * Newton-Raphson method for geometrically nonlinear elastostatics and elastodynamics
 * Arc-length method for geometrically nonlinear elastostatics and elastodynamics with strong nonlinearities (e.g. post-buckling analysis)
 * Uncertainty Quantification:
- - **Parametric** probabilistic models for material properties
- - **Nonparametric** probabilistic models for reduced matrices for all dynamics solvers
+  - **Parametric** probabilistic models for material properties
+  - **Nonparametric** probabilistic models for reduced matrices for all dynamics solvers
 * Gaussian Kernel Density Estimation (GKDE) for the estimation of probability density functions of observable quantities
 * Causal nonparametric probabilistic models (linear viscoelasticity)
 
