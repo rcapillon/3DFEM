@@ -71,27 +71,29 @@ Deformed mesh at 15500 Hz | Deformed mesh at 16250 Hz | Deformed mesh at 17000 H
 :------------------------:|:-------------------------:|:-------------------------:
 ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_15500Hz.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_16250Hz.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_17000Hz.png)
 
-Deterministic FRF at excited DOF | Deterministic FRF at observed point                                                                   
+Deterministic FRF at excited DOF | Stochastic FRF at excited DOF                                                                  
 :---------------------------------:|:----------------------------------:
-![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf2.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf1.png)
+![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf2.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/UQ_plate_frf2.png)
 
-Stochastic FRF at excited DOF | Stochastic FRF at observed point                                                                   
+Deterministic FRF at observed DOF | Stochastic FRF at observed DOF                                                                  
 :---------------------------------:|:----------------------------------:
-![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/UQ_plate_frf2.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/UQ_plate_frf1.png)
+![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf1.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/UQ_plate_frf1.png)
 
 ### Time-domain dynamics
-
-*Linear elastic plate excited by 3 sinusoidal nodal forces (15500, 16250 and 17000 Hz) at the center of the upper face*
-
-Deformed mesh animation | Vertical displacement at excited DOF | Vertical displacement at observed DOF
-:----------------------:|:------------------------------------:|:-------------------------------------:
-![](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/plate_dynamics.gif) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_time_displacement2.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_time_displacement1.png)
 
 *Linear elastic cantilever beam with Rayleigh damping pulled up by a constant force on its free end, then released*
 
 Deformed mesh animation
 :----------------------:
 ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_dynamics.gif)
+
+Deterministic displacement at excited DOF | Stochastic displacement at excited DOF
+:----:|:----:
+![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/beam_time_displacement2.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/UQ_beam_time_displacement2.png)
+
+Deterministic displacement at observed DOF | Stochastic displacement at observed DOF
+:----:|:----:
+![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/beam_time_displacement1.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/UQ_beam_time_displacement1.png)
 
 ----
 
