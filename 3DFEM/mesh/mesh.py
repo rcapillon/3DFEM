@@ -107,3 +107,6 @@ class Mesh:
         
     def get_observed_dofs(self):
         return self.__ls_dofs_observed
+    
+    def get_n_observed_dofs(self):
+        return self.__n_dofs_observed

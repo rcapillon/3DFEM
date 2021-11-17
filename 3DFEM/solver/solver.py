@@ -82,26 +82,23 @@ class Solver:
         
         print("Computing reduced-order model...")
         
-        self.modal_solver(n_modes)
-        
-        self.__structure.compute_D()
-        self.__structure.apply_dirichlet_D()
-        
+        self.__structure.compute_linear_ROM(n_modes)
+                
         self.__force.compute_F0()
-        self.__force.compute_varying_F()
+        self.__force.compute_varying_F(n_timesteps)
         self.__force.apply_dirichlet_F()
-        
-        Mrom = np.dot(self.__modesL.transpose(), self.__structure.get_MLL().dot(self.__modesL))
-        Krom = np.dot(self.__modesL.transpose(), self.__structure.get_KLL().dot(self.__modesL))
-        Drom = np.dot(self.__modesL.transpose(), self.__structure.get_DLL().dot(self.__modesL))
-        
-        From = np.dot(self.__modesL.transpose(), self.__force.get_FL())
+                
+        Mrom = self.__structure.get_Mrom()
+        Krom = self.__structure.get_Krom()
+        Drom = self.__structure.get_Drom()
+                
+        From = np.dot(self.__structure.get_modesL().transpose(), self.__force.get_FL())
         
         print("Applying initial conditions...")
         
-        qU0 = np.dot(self.__modesL.transpose(), self.__structure.get_U0L())
-        qV0 = np.dot(self.__modesL.transpose(), self.__structure.get_V0L())
-        qA0 = np.dot(self.__modesL.transpose(), self.__structure.get_A0L())
+        qU0 = np.dot(self.__structure.get_modesL().transpose(), self.__structure.get_U0L())
+        qV0 = np.dot(self.__structure.get_modesL().transpose(), self.__structure.get_V0L())
+        qA0 = np.dot(self.__structure.get_modesL().transpose(), self.__structure.get_A0L())
         
         self.__qU = np.zeros((n_modes, n_timesteps))
         self.__qV = np.zeros((n_modes, n_timesteps))
@@ -142,9 +139,9 @@ class Solver:
             
         print("End of time-domain resolution.")
         
-        self.__mat_U_observed = np.dot(self.__modes[self.__structure.get_mesh().get_observed_dofs(), :], self.__qU)
-        self.__mat_V_observed = np.dot(self.__modes[self.__structure.get_mesh().get_observed_dofs(), :], self.__qV)
-        self.__mat_A_observed = np.dot(self.__modes[self.__structure.get_mesh().get_observed_dofs(), :], self.__qA)
+        self.__mat_U_observed = np.dot(self.__structure.get_modes()[self.__structure.get_mesh().get_observed_dofs(), :], self.__qU)
+        self.__mat_V_observed = np.dot(self.__structure.get_modes()[self.__structure.get_mesh().get_observed_dofs(), :], self.__qV)
+        self.__mat_A_observed = np.dot(self.__structure.get_modes()[self.__structure.get_mesh().get_observed_dofs(), :], self.__qA)
     
     def linear_diagonal_newmark_solver(self, beta1, beta2, vec_t, n_modes, verbose=True):
         self.__x_axis = vec_t
@@ -154,25 +151,23 @@ class Solver:
         
         print("Computing reduced-order model...")
         
-        self.modal_solver(n_modes)
+        self.__structure.compute_linear_diagonal_ROM(n_modes)
                 
         self.__force.compute_F0()
-        self.__force.compute_varying_F()
+        self.__force.compute_varying_F(n_timesteps)
         self.__force.apply_dirichlet_F()
+                
+        Mrom = self.__structure.get_Mrom()
+        Krom = self.__structure.get_Krom()
+        Drom = self.__structure.get_Drom()
         
-        Mrom = np.dot(self.__modesL.transpose(), self.__structure.get_MLL().dot(self.__modesL))
-        
-        Mrom = np.ones((n_modes,))
-        Krom = np.power(2 * np.pi * self.__eigenfreqs, 2)
-        Drom = self.__structure.get_alphaM() * Mrom + self.__structure.get_alphaK() * Krom
-        
-        From = np.dot(self.__modesL.transpose(), self.__force.get_FL())
+        From = np.dot(self.__structure.get_modesL().transpose(), self.__force.get_FL())
         
         print("Applying initial conditions...")
         
-        qU0 = np.dot(self.__modesL.transpose(), self.__structure.get_U0L())
-        qV0 = np.dot(self.__modesL.transpose(), self.__structure.get_V0L())
-        qA0 = np.dot(self.__modesL.transpose(), self.__structure.get_A0L())
+        qU0 = np.dot(self.__structure.get_modesL().transpose(), self.__structure.get_U0L())
+        qV0 = np.dot(self.__structure.get_modesL().transpose(), self.__structure.get_V0L())
+        qA0 = np.dot(self.__structure.get_modesL().transpose(), self.__structure.get_A0L())
         
         self.__qU = np.zeros((n_modes, n_timesteps))
         self.__qV = np.zeros((n_modes, n_timesteps))
@@ -213,9 +208,9 @@ class Solver:
             
         print("End of time-domain resolution.")
         
-        self.__mat_U_observed = np.dot(self.__modes[self.__structure.get_mesh().get_observed_dofs(), :], self.__qU)
-        self.__mat_V_observed = np.dot(self.__modes[self.__structure.get_mesh().get_observed_dofs(), :], self.__qV)
-        self.__mat_A_observed = np.dot(self.__modes[self.__structure.get_mesh().get_observed_dofs(), :], self.__qA)
+        self.__mat_U_observed = np.dot(self.__structure.get_modes()[self.__structure.get_mesh().get_observed_dofs(), :], self.__qU)
+        self.__mat_V_observed = np.dot(self.__structure.get_modes()[self.__structure.get_mesh().get_observed_dofs(), :], self.__qV)
+        self.__mat_A_observed = np.dot(self.__structure.get_modes()[self.__structure.get_mesh().get_observed_dofs(), :], self.__qA)
     
     def linear_frequency_solver(self, vec_f, n_modes, verbose=True):
         self.__x_axis = vec_f
@@ -224,21 +219,17 @@ class Solver:
         
         print("Computing reduced-order model...")
         
-        self.modal_solver(n_modes)
+        self.__structure.compute_linear_ROM(n_modes)
                 
-        self.__structure.compute_D()
-        self.__structure.apply_dirichlet_D()
-        
         self.__force.compute_F0()
         self.__force.compute_varying_F(n_freqsteps)
-        
         self.__force.apply_dirichlet_F()
                 
-        Mrom = np.dot(self.__modesL.transpose(), self.__structure.get_MLL().dot(self.__modesL))
-        Krom = np.dot(self.__modesL.transpose(), self.__structure.get_KLL().dot(self.__modesL))
-        Drom = np.dot(self.__modesL.transpose(), self.__structure.get_DLL().dot(self.__modesL))
+        Mrom = self.__structure.get_Mrom()
+        Krom = self.__structure.get_Krom()
+        Drom = self.__structure.get_Drom()
         
-        From = np.dot(self.__modesL.transpose(), self.__force.get_FL())
+        From = np.dot(self.__structure.get_modesL().transpose(), self.__force.get_FL())
         
         # resolution
         
@@ -261,9 +252,9 @@ class Solver:
             
             self.__qU[:, ii] = qU_ii
             
-        print("End of time-domain resolution.")
+        print("End of frequency-domain resolution.")
         
-        self.__mat_U_observed = np.abs(np.dot(self.__modes[self.__structure.get_mesh().get_observed_dofs(), :], self.__qU))
+        self.__mat_U_observed = np.abs(np.dot(self.__structure.get_modes()[self.__structure.get_mesh().get_observed_dofs(), :], self.__qU))
     
     def linear_diagonal_frequency_solver(self, vec_f, n_modes, verbose=True):
         self.__x_axis = vec_f
@@ -272,21 +263,17 @@ class Solver:
         
         print("Computing reduced-order model...")
         
-        self.modal_solver(n_modes)
+        self.__structure.compute_linear_diagonal_ROM(n_modes)
                 
-        self.__structure.compute_D()
-        self.__structure.apply_dirichlet_D()
-        
         self.__force.compute_F0()
         self.__force.compute_varying_F(n_freqsteps)
-        
         self.__force.apply_dirichlet_F()
                 
-        Mrom = np.ones((n_modes,))
-        Krom = np.power(2 * np.pi * self.__eigenfreqs, 2)
-        Drom = self.__structure.get_alphaM() * Mrom + self.__structure.get_alphaK() * Krom
+        Mrom = self.__structure.get_Mrom()
+        Krom = self.__structure.get_Krom()
+        Drom = self.__structure.get_Drom()
         
-        From = np.dot(self.__modesL.transpose(), self.__force.get_FL())
+        From = np.dot(self.__structure.get_modesL().transpose(), self.__force.get_FL())
         
         # resolution
         
@@ -309,9 +296,9 @@ class Solver:
             
             self.__qU[:, ii] = qU_ii
             
-        print("End of time-domain resolution.")
+        print("End of frequency-domain resolution.")
         
-        self.__mat_U_observed = np.abs(np.dot(self.__modes[self.__structure.get_mesh().get_observed_dofs(), :], self.__qU))
+        self.__mat_U_observed = np.abs(np.dot(self.__structure.get_modes()[self.__structure.get_mesh().get_observed_dofs(), :], self.__qU))
     
     def get_x_axis(self):
         return self.__x_axis
@@ -326,17 +313,17 @@ class Solver:
         return self.__qA
     
     def get_sub_U(self, ls_dofs):
-        sub_U = np.dot(self.__modes[ls_dofs, :], self.__qU)
+        sub_U = np.dot(self.__structure.get_modes()[ls_dofs, :], self.__qU)
         
         return sub_U
     
     def get_sub_V(self, ls_dofs):
-        sub_V = np.dot(self.__modes[ls_dofs, :], self.__qV)
+        sub_V = np.dot(self.__structure.get_modes()[ls_dofs, :], self.__qV)
         
         return sub_V
     
     def get_sub_A(self, ls_dofs):
-        sub_A = np.dot(self.__modes[ls_dofs, :], self.__qA)
+        sub_A = np.dot(self.__structure.get_modes()[ls_dofs, :], self.__qA)
         
         return sub_A
     
@@ -350,36 +337,130 @@ class Solver:
         return self.__mat_A_observed
         
     def get_mat_U(self):
-        mat_U = np.dot(self.__modes, self.__qU)
+        mat_U = np.dot(self.__structure.get_modes(), self.__qU)
         
         return mat_U
     
     def get_mat_V(self):
-        mat_V = np.dot(self.__modes, self.__qV)
+        mat_V = np.dot(self.__structure.get_modes(), self.__qV)
         
         return mat_V
     
     def get_mat_A(self):
-        mat_A = np.dot(self.__modes, self.__qA)
+        mat_A = np.dot(self.__structure.get_modes(), self.__qA)
         
         return mat_A
     
     def get_vec_U_step(self, index_step):
-        vec_U = np.dot(self.__modes, self.__qU[:, index_step])
+        vec_U = np.dot(self.__structure.get_modes(), self.__qU[:, index_step])
         
         return vec_U
     
     def get_vec_V_step(self, index_step):
-        vec_V = np.dot(self.__modes, self.__qV[:, index_step])
+        vec_V = np.dot(self.__structure.get_modes(), self.__qV[:, index_step])
         
         return vec_V
     
     def get_vec_A_step(self, index_step):
-        vec_A = np.dot(self.__modes, self.__qA[:, index_step])
+        vec_A = np.dot(self.__structure.get_modes(), self.__qA[:, index_step])
         
         return vec_A
     
     def get_vec_absU_step(self, index_step):
-        vec_U = np.abs(np.dot(self.__modes, self.__qU[:, index_step]))
+        vec_U = np.abs(np.dot(self.__structure.get_modes(), self.__qU[:, index_step]))
         
         return vec_U
+    
+    def linear_frequency_solver_UQ(self, vec_f, n_modes, n_samples, dispersion_coefficient_M, dispersion_coefficient_K, add_deterministic=False, verbose=True):
+        self.__x_axis = vec_f
+        vec_w = 2 * np.pi * vec_f
+        n_freqsteps = len(self.__x_axis)
+        
+        self.__structure.set_n_samples(n_samples)
+        self.__structure.set_dispersion_coefficient_M(dispersion_coefficient_M)
+        self.__structure.set_dispersion_coefficient_K(dispersion_coefficient_K)
+        
+        print("Computing reduced-order model...")
+        
+        self.__structure.compute_linear_ROM(n_modes)
+        self.__structure.generate_random_matrices()
+        
+        Mrom_rand = self.__structure.get_Mrom_rand()
+        Krom_rand = self.__structure.get_Krom_rand()
+        Drom_rand = self.__structure.get_Drom_rand()
+        
+        Mrom_mean = np.mean(Mrom_rand, axis=2)
+        Krom_mean = np.mean(Krom_rand, axis=2)
+        Drom_mean = np.mean(Drom_rand, axis=2)
+                
+        self.__force.compute_F0()
+        self.__force.compute_varying_F(n_freqsteps)
+        self.__force.apply_dirichlet_F()
+        
+        From = np.dot(self.__structure.get_modesL().transpose(), self.__force.get_FL())
+        
+        # resolution
+        
+        print("Starting stochastic frequency-domain resolution...")
+        
+        self.__qU_rand = np.zeros((n_modes, n_freqsteps, n_samples), dtype=np.csingle)
+        self.__array_U_rand_observed = np.zeros((self.__structure.get_mesh().get_n_observed_dofs(), n_freqsteps, n_samples))
+           
+        for jj in range(n_samples):
+            
+            if verbose == True:
+                print("Sample n° ", jj)
+                
+            Mrom_ii = np.squeeze(Mrom_rand[:, :, jj])
+            Krom_ii = np.squeeze(Krom_rand[:, :, jj])
+            Drom_ii = np.squeeze(Drom_rand[:, :, jj])
+        
+            for ii in range(n_freqsteps):
+                
+                w_ii = vec_w[ii]
+                    
+                matrix_ii = -(w_ii**2) * Mrom_ii + 1j * w_ii * Drom_ii + Krom_ii
+                            
+                vector_ii = From[:, ii]
+                            
+                qU_ii = np.linalg.solve(matrix_ii, vector_ii)
+                
+                self.__qU_rand[:, ii, jj] = qU_ii
+                    
+            self.__mat_U_rand_observed = np.abs(np.dot(self.__structure.get_modes()[self.__structure.get_mesh().get_observed_dofs(), :], np.squeeze(self.__qU_rand[:, :, jj])))
+            self.__array_U_rand_observed[:, :, jj] = self.__mat_U_rand_observed
+            
+        if add_deterministic == True:
+            
+            Mrom = self.__structure.get_Mrom()
+            Krom = self.__structure.get_Krom()
+            Drom = self.__structure.get_Drom()
+            
+            print(np.linalg.norm(Mrom_mean - Mrom) / np.linalg.norm(Mrom))
+            print(np.linalg.norm(Krom_mean - Krom) / np.linalg.norm(Krom))
+            print(np.linalg.norm(Drom_mean - Drom) / np.linalg.norm(Drom))
+            
+            self.__qU = np.zeros((n_modes, n_freqsteps), dtype=np.csingle)
+                
+            for ii in range(n_freqsteps):
+                
+                w_ii = vec_w[ii]
+                
+                matrix_ii = -(w_ii**2) * Mrom + 1j * w_ii * Drom + Krom
+                            
+                vector_ii = From[:, ii]
+                            
+                qU_ii = np.linalg.solve(matrix_ii, vector_ii)
+                
+                self.__qU[:, ii] = qU_ii
+                            
+            self.__mat_U_observed = np.abs(np.dot(self.__structure.get_modes()[self.__structure.get_mesh().get_observed_dofs(), :], self.__qU))
+            
+            
+        print("End of stochastic frequency-domain resolution.")
+        
+    def get_qU_rand(self):
+        return self.__qU_rand
+    
+    def get_array_U_rand_observed(self):
+        return self.__array_U_rand_observed

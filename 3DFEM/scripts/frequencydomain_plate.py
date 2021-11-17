@@ -12,7 +12,7 @@ import time
 import numpy as np
 
 import importlib.util
-spec0 = importlib.util.spec_from_file_location("functions", "../functions.py")
+spec0 = importlib.util.spec_from_file_location("functions", "../functions/functions.py")
 fun = importlib.util.module_from_spec(spec0)
 spec0.loader.exec_module(fun)
 

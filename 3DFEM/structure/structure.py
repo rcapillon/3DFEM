@@ -10,11 +10,17 @@
 
 import numpy as np
 import scipy.sparse
+from scipy.sparse.linalg import eigsh
 
 import importlib.util
 spec1 = importlib.util.spec_from_file_location("mesh", "../mesh/mesh.py")
 mesh = importlib.util.module_from_spec(spec1)
 spec1.loader.exec_module(mesh)
+
+import importlib.util
+spec2 = importlib.util.spec_from_file_location("random_generators", "../random_generators/random_generators.py")
+rng = importlib.util.module_from_spec(spec2)
+spec2.loader.exec_module(rng)
 
 class Structure:
     def __init__(self, mesh):
@@ -24,6 +30,18 @@ class Structure:
         self.__n_dir_dofs = len(self.__mesh.get_dirichlet_dofs())
         self.__alphaM = 0
         self.__alphaK = 0
+        self.__dispersion_coefficient_M = 0
+        self.__dispersion_coefficient_K = 0
+        self.__n_samples = 0
+        
+    def get_n_total_dofs(self):
+        return self.__n_total_dofs
+    
+    def get_n_free_dofs(self):
+        return self.__n_free_dofs
+    
+    def get_n_dir_dofs(self):
+        return self.__n_dir_dofs
         
     def get_mesh(self):
         return self.__mesh
@@ -107,13 +125,10 @@ class Structure:
             vec_dataK = np.append(vec_dataK, element.get_mat_Ke().flatten(order='F'))
             
         self.__mat_M = scipy.sparse.csr_matrix((vec_dataM, (vec_rows, vec_cols)), shape=(self.__n_total_dofs, self.__n_total_dofs))
-        
-        if symmetrization == True:
-            self.__mat_M = 0.5 * (self.__mat_M + self.__mat_M.transpose())
-        
         self.__mat_K = scipy.sparse.csr_matrix((vec_dataK, (vec_rows, vec_cols)), shape=(self.__n_total_dofs, self.__n_total_dofs))
         
         if symmetrization == True:
+            self.__mat_M = 0.5 * (self.__mat_M + self.__mat_M.transpose())
             self.__mat_K = 0.5 * (self.__mat_K + self.__mat_K.transpose())
         
     def set_rayleigh(self, alphaM, alphaK):
@@ -194,3 +209,102 @@ class Structure:
         
     def get_A0L(self):
         return self.__vec_A0L
+    
+    def compute_modes(self, n_modes):
+        # Eigenvectors are mass-normalized
+        
+        self.compute_M_K()
+        self.apply_dirichlet_M()
+        self.apply_dirichlet_K()
+        
+        (eigvals, eigvects) = eigsh(self.__mat_KLL, n_modes, self.__mat_MLL, which='SM')
+        sort_indices = np.argsort(eigvals)
+        eigvals = eigvals[sort_indices]
+        eigvects = eigvects[:, sort_indices]
+        
+        self.__eigenfreqs = np.sqrt(eigvals) / (2 * np.pi)
+        self.__modesL = eigvects
+        self.__modes = np.zeros((self.__n_total_dofs, n_modes))
+        self.__modes[self.__mesh.get_free_dofs(), :] = eigvects
+        
+    def get_eigenfreqs(self):
+        return self.__eigenfreqs
+    
+    def get_modesL(self):
+        return self.__modesL
+    
+    def get_modes(self):
+        return self.__modes
+        
+    def compute_linear_ROM(self, n_modes):
+        self.compute_modes(n_modes)
+        
+        self.__Mrom = np.dot(self.__modesL.transpose(), self.__mat_MLL.dot(self.__modesL))
+        self.__Krom = np.dot(self.__modesL.transpose(), self.__mat_KLL.dot(self.__modesL))
+        self.__Drom = self.__alphaM * self.__Mrom + self.__alphaK * self.__Krom
+        
+        if self.__dispersion_coefficient_M > 0:
+            self.__cholesky_Mrom = np.linalg.cholesky(self.__Mrom)
+        if self.__dispersion_coefficient_K > 0:
+            self.__cholesky_Krom = np.linalg.cholesky(self.__Krom)
+        if self.__dispersion_coefficient_M > 0 or self.__dispersion_coefficient_K > 0:
+            self.__cholesky_Drom = np.linalg.cholesky(self.__Drom)
+        
+    def compute_linear_diagonal_ROM(self, n_modes):
+        self.compute_modes(n_modes)
+        
+        self.__Mrom = np.ones((n_modes,))
+        self.__Krom = np.power(2 * np.pi * self.__eigenfreqs, 2)
+        self.__Drom = self.__alphaM * self.__Mrom + self.__alphaK * self.__Krom
+        
+    def get_Mrom(self):
+        return self.__Mrom
+    
+    def get_Krom(self):
+        return self.__Krom
+    
+    def get_Drom(self):
+        return self.__Drom
+    
+    def set_n_samples(self, n_samples):
+        self.__n_samples = n_samples
+    
+    def set_dispersion_coefficient_M(self, dispersion_coefficient_M):
+        self.__dispersion_coefficient_M = dispersion_coefficient_M
+        
+    def set_dispersion_coefficient_K(self, dispersion_coefficient_K):
+        self.__dispersion_coefficient_K = dispersion_coefficient_K
+        
+    def generate_random_M(self):
+        self.__Mrom_rand = rng.matrices_wishart(self.__n_samples, self.__cholesky_Mrom, self.__dispersion_coefficient_M)
+        
+    def generate_random_K(self):
+        self.__Krom_rand = rng.matrices_wishart(self.__n_samples, self.__cholesky_Krom, self.__dispersion_coefficient_K)
+        
+    def compute_random_D(self):
+        self.__Drom_rand = self.__alphaM * self.__Mrom_rand + self.__alphaK * self.__Krom_rand
+        
+    def generate_random_matrices(self):
+        if self.__dispersion_coefficient_M > 0:
+            self.generate_random_M()
+        else:
+            self.__Mrom_rand = np.tile(self.__Mrom, (1, 1, self.__n_samples))
+            
+        if self.__dispersion_coefficient_K > 0:
+            self.generate_random_K()
+        else:
+            self.__Krom_rand = np.tile(self.__Krom, (1, 1, self.__n_samples))
+            
+        if self.__dispersion_coefficient_M > 0 or self.__dispersion_coefficient_K > 0:
+            self.compute_random_D()
+        else:
+            self.__Drom_rand = np.tile(self.__Drom, (1, 1, self.__n_samples))
+            
+    def get_Mrom_rand(self):
+        return self.__Mrom_rand
+    
+    def get_Krom_rand(self):
+        return self.__Krom_rand
+    
+    def get_Drom_rand(self):
+        return self.__Drom_rand

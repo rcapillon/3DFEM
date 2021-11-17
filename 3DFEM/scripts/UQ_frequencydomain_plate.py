@@ -16,7 +16,6 @@ spec0 = importlib.util.spec_from_file_location("functions", "../functions/functi
 fun = importlib.util.module_from_spec(spec0)
 spec0.loader.exec_module(fun)
 
-import importlib.util
 spec1 = importlib.util.spec_from_file_location("mesh", "../mesh/mesh.py")
 mesh = importlib.util.module_from_spec(spec1)
 spec1.loader.exec_module(mesh)
@@ -34,22 +33,22 @@ solver = importlib.util.module_from_spec(spec4)
 spec4.loader.exec_module(solver)
 
 ##############################################################################
-# Time-domain analysis of a plate
+# Stochastic frequency-domain analysis of a plate
 ##############################################################################
 
 computation_time_start = time.time()
 
 ####
-# timesteps
+# freqsteps
 ####
 
-print("Defining time interval of analysis and sampling rate...")
+print("Defining frequency band of analysis and sampling rate...")
 
-n_timesteps = 2000
-t_0 = 0.0
-t_max = 8e-4
+f0 = 12500
+fmax = 25000
+n_freqsteps = 2000
 
-vec_t = np.linspace(t_0, t_max, n_timesteps)
+vec_freq = np.linspace(f0, fmax, n_freqsteps)
 
 ####
 # material
@@ -143,10 +142,6 @@ alphaM = 0
 alphaK = 4e-7
 plate_structure.set_rayleigh(alphaM, alphaK)
 
-plate_structure.set_U0L()
-plate_structure.set_V0L()
-plate_structure.set_A0L()
-
 ####
 # force
 ####
@@ -158,23 +153,8 @@ plate_force = force.Force(plate_mesh)
 force_coords = np.array([L_x/2, L_y/2, L_z])
 ls_nodes_force = fun.find_nodes_with_coordinates(plate_mesh.get_points(), force_coords)
 
-nodal_force_vector = np.array([0, 0, -1.5e9])
+nodal_force_vector = np.array([0, 0, -1e0])
 plate_force.add_nodal_forces_t0(ls_nodes_force, nodal_force_vector)
-
-vec_variation = np.zeros((n_timesteps,))
-
-freq0 = 15500
-freq1 = 16250
-freq2 = 17000
-
-amp0 = 1
-amp1 = 1
-amp2 = 1
-
-vec_t = np.linspace(t_0, t_max, n_timesteps)
-vec_variation[:] = amp0 * np.sin(2 * np.pi * freq0 * vec_t) + amp1 * np.sin(2 * np.pi * freq1 * vec_t) + amp2 * np.sin(2 * np.pi * freq2 * vec_t)
-
-plate_force.set_F_variation(vec_variation)
 
 plate_force.compute_F0()
 
@@ -186,16 +166,21 @@ print("Defining solver...")
 
 plate_solver = solver.Solver(plate_structure, plate_force)
 
-beta1 = 1.0/2
-beta2 = 1.0/2
-
 n_modes = 300
 
 print("Running solver...")
 
 solver_subtime_start = time.time()
 
-plate_solver.linear_diagonal_newmark_solver(beta1, beta2, vec_t, n_modes, verbose=False)
+n_samples = 1000
+
+# delta_M = np.sqrt((n_modes + 1) / (n_modes + 5))
+# delta_K = np.sqrt((n_modes + 1) / (n_modes + 5))
+delta_M = 0.1
+delta_K = 0.1
+
+plate_solver.linear_frequency_solver_UQ(vec_freq, n_modes, n_samples, delta_M, delta_K,\
+                                        add_deterministic=True, verbose=True)
 
 solver_subtime_end = time.time()
 
@@ -207,14 +192,13 @@ print("Solver sub-time: ", np.round_(solver_subtime_end - solver_subtime_start, 
 
 print("Post-processing...")
 
-file_name_plot = "./timedomain_plate_plot"
-fun.plot_observed_U(file_name_plot, plate_solver, x_name="Time (s)", y_name="Displacement (m)", plot_type="linear")
+file_name_frf = "./UQ_freqdomain_plate_frf"
 
-mat_U = plate_solver.get_mat_U()
+confidence_level = 0.95
 
-file_name = "./animation_timedomain_plate"
-scale = 1e0
-fun.export_U_newmark_animation(file_name, plate_mesh, mat_U, scale)
+fun.plot_random_observed_U(file_name_frf, plate_solver, confidence_level,\
+                           x_name="Frequency (Hz)", y_name="Displacement amplitude (m)", plot_type="semilogy",\
+                           add_deterministic=True)
 
 ####
 # end
