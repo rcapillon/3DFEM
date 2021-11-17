@@ -16,7 +16,6 @@ spec0 = importlib.util.spec_from_file_location("functions", "../functions/functi
 fun = importlib.util.module_from_spec(spec0)
 spec0.loader.exec_module(fun)
 
-import importlib.util
 spec1 = importlib.util.spec_from_file_location("mesh", "../mesh/mesh.py")
 mesh = importlib.util.module_from_spec(spec1)
 spec1.loader.exec_module(mesh)
@@ -45,7 +44,7 @@ computation_time_start = time.time()
 
 print("Defining time interval of analysis and sampling rate...")
 
-n_timesteps = 2000
+n_timesteps = 1000
 t_0 = 0.0
 t_max = 8e-4
 
@@ -75,9 +74,9 @@ L_z = 1e-1
 
 # mesh
 
-Nn_x = 61
-Nn_y = 61
-Nn_z = 7
+Nn_x = 41
+Nn_y = 41
+Nn_z = 5
 
 line_x = np.linspace(0, L_x, Nn_x)
 line_y = np.linspace(0, L_y, Nn_y)
@@ -100,11 +99,11 @@ plate_mesh.delaunay3D_from_points(rho, Y, nu)
 
 # Observed DOFs
 
-observed_node1_coords = np.array([15*L_x/(Nn_x - 1), 15*L_y/(Nn_y - 1), L_z])
+observed_node1_coords = np.array([10*L_x/(Nn_x - 1), 10*L_y/(Nn_y - 1), L_z])
 observed_node1_number = fun.find_nodes_with_coordinates(plate_mesh.get_points(), observed_node1_coords)[0]
 observed_dof1_number = observed_node1_number * 3 + 2
 
-observed_node2_coords = np.array([30*L_x/(Nn_x - 1), 30*L_y/(Nn_y - 1), L_z])
+observed_node2_coords = np.array([20*L_x/(Nn_x - 1), 20*L_y/(Nn_y - 1), L_z])
 observed_node2_number = fun.find_nodes_with_coordinates(plate_mesh.get_points(), observed_node2_coords)[0]
 observed_dof2_number = observed_node2_number * 3 + 2
 
@@ -214,7 +213,7 @@ mat_U = plate_solver.get_mat_U()
 
 file_name = "./animation_timedomain_plate"
 scale = 1e0
-fun.export_U_newmark_animation(file_name, plate_mesh, mat_U, scale)
+fun.export_U_newmark_animation(file_name, plate_solver, scale)
 
 ####
 # end

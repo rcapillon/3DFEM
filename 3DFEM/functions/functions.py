@@ -11,6 +11,7 @@
 import numpy as np
 import copy
 import matplotlib.pyplot as plt
+from scipy import stats
 
 def find_nodes_in_yzplane(points, x):
     ls_nodes = np.where(points[:,0] == x)[0].tolist()
@@ -133,23 +134,23 @@ def export_U_on_mesh(file_name, mesh, vec_U, scale):
     deformed_mesh.add_U_to_points(scale * vec_U)
     export_mesh_to_vtk(file_name, deformed_mesh, n_points, n_faces, n_cols)
     
-def export_U_newmark_animation(file_name, mesh, mat_U, scale):
-    n_frames = mat_U.shape[1]
+def export_U_newmark_animation(file_name, solver, scale):
+    n_frames = len(solver.get_x_axis())
     
-    n_points = mesh.get_n_points()
+    n_points = solver.get_structure().get_mesh().get_n_points()
     
     n_faces = 0
     n_cols = 0
 
-    for element in mesh.get_elements_list():
+    for element in solver.get_structure().get_mesh().get_elements_list():
         element_faces = element.get_faces()
         n_faces += len(element_faces)
         for face in element_faces:
             n_cols += 1 + len(face)
     
     for ii in range(n_frames):
-        deformed_mesh = copy.deepcopy(mesh)
-        U = mat_U[:, ii]
+        deformed_mesh = copy.deepcopy(solver.get_structure().get_mesh())
+        U = solver.get_vec_U_step(ii)
         deformed_mesh.add_U_to_points(scale * U)
         animation_frame_name = file_name + str(ii)
         export_mesh_to_vtk(animation_frame_name, deformed_mesh, n_points, n_faces, n_cols)
@@ -244,3 +245,8 @@ def plot_random_observed_U(file_name, solver, confidence_level, x_name="", y_nam
         ax.grid()
     
         fig.savefig(image_name + ".png")
+        
+def plot_ksdensity_random_observed_U(file_name, solver, confidence_level, num_step, x_name=""):
+    x = solver.get_x_axis()[num_step]
+    ls_dofs_observed = solver.get_structure().get_mesh().get_observed_dofs()
+    mat_U = np.squeeze(solver.get_array_U_rand_observed()[:, num_step, :])

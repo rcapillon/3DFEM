@@ -125,7 +125,7 @@ class Solver:
             
             matrix_ii = Mrom + beta2 * dt**2 * Krom / 2 + dt * Drom / 2
                         
-            vector1_ii = From[:, ii - 1]
+            vector1_ii = From[:, ii]
             vector2_ii = np.dot(Krom, self.__qU[:, ii - 1] + dt * self.__qV[:, ii - 1] + 0.5 * (1 - beta2) * dt**2 * self.__qA[:, ii - 1])
             vector3_ii = np.dot(Drom, self.__qV[:, ii - 1] + dt * self.__qA[:, ii - 1] / 2)
                         
@@ -136,6 +136,8 @@ class Solver:
             self.__qU[:, ii] = qU_ii
             self.__qV[:, ii] = qV_ii
             self.__qA[:, ii] = qA_ii
+            
+            prev_t = t_ii
             
         print("End of time-domain resolution.")
         
@@ -194,7 +196,7 @@ class Solver:
             
             matrix_ii = Mrom + beta2 * dt**2 * Krom / 2 + dt * Drom / 2
                         
-            vector1_ii = From[:, ii - 1]
+            vector1_ii = From[:, ii]
             vector2_ii = np.multiply(Krom, self.__qU[:, ii - 1] + dt * self.__qV[:, ii - 1] + 0.5 * (1 - beta2) * dt**2 * self.__qA[:, ii - 1])
             vector3_ii = np.multiply(Drom, self.__qV[:, ii - 1] + dt * self.__qA[:, ii - 1] / 2)
                         
@@ -205,6 +207,8 @@ class Solver:
             self.__qU[:, ii] = qU_ii
             self.__qV[:, ii] = qV_ii
             self.__qA[:, ii] = qA_ii
+            
+            prev_t = t_ii
             
         print("End of time-domain resolution.")
         
@@ -371,6 +375,136 @@ class Solver:
         
         return vec_U
     
+    def linear_newmark_solver_UQ(self, beta1, beta2, vec_t, n_modes, n_samples, dispersion_coefficient_M, dispersion_coefficient_K, add_deterministic=False, verbose=True):
+        self.__x_axis = vec_t
+        
+        n_timesteps = len(self.__x_axis)
+        
+        self.__structure.set_n_samples(n_samples)
+        self.__structure.set_dispersion_coefficient_M(dispersion_coefficient_M)
+        self.__structure.set_dispersion_coefficient_K(dispersion_coefficient_K)
+        
+        print("Computing reduced-order model...")
+        
+        self.__structure.compute_linear_ROM(n_modes)
+        self.__structure.generate_random_matrices()
+        
+        Mrom_rand = self.__structure.get_Mrom_rand()
+        Krom_rand = self.__structure.get_Krom_rand()
+        Drom_rand = self.__structure.get_Drom_rand()
+                
+        self.__force.compute_F0()
+        self.__force.compute_varying_F(n_timesteps)
+        self.__force.apply_dirichlet_F()
+        
+        From = np.dot(self.__structure.get_modesL().transpose(), self.__force.get_FL())
+        
+        print("Applying initial conditions...")
+        
+        qU0 = np.dot(self.__structure.get_modesL().transpose(), self.__structure.get_U0L())
+        qV0 = np.dot(self.__structure.get_modesL().transpose(), self.__structure.get_V0L())
+        qA0 = np.dot(self.__structure.get_modesL().transpose(), self.__structure.get_A0L())
+        
+        self.__qU = np.zeros((n_modes, n_timesteps))
+        self.__qV = np.zeros((n_modes, n_timesteps))
+        self.__qA = np.zeros((n_modes, n_timesteps))
+        
+        self.__qU[:, 0] = qU0
+        self.__qV[:, 0] = qV0
+        self.__qA[:, 0] = qA0
+        
+        # resolution
+        
+        print("Starting stochastic time-domain resolution...")
+        
+        self.__qU_rand = np.zeros((n_modes, n_timesteps, n_samples))
+        self.__qV_rand = np.zeros((n_modes, n_timesteps, n_samples))
+        self.__qA_rand = np.zeros((n_modes, n_timesteps, n_samples))
+        self.__array_U_rand_observed = np.zeros((self.__structure.get_mesh().get_n_observed_dofs(), n_timesteps, n_samples))
+        self.__array_V_rand_observed = np.zeros((self.__structure.get_mesh().get_n_observed_dofs(), n_timesteps, n_samples))
+        self.__array_A_rand_observed = np.zeros((self.__structure.get_mesh().get_n_observed_dofs(), n_timesteps, n_samples))
+            
+        for jj in range(n_samples):
+            
+            if verbose == True:
+                print("Sample n° ", jj)
+                
+            prev_t = self.__x_axis[0]
+                
+            Mrom_ii = np.squeeze(Mrom_rand[:, :, jj])
+            Krom_ii = np.squeeze(Krom_rand[:, :, jj])
+            Drom_ii = np.squeeze(Drom_rand[:, :, jj])
+        
+            for ii in range(1, n_timesteps):
+                
+                t_ii = self.__x_axis[ii]
+            
+                dt = t_ii - prev_t
+                
+                matrix_ii = Mrom_ii + beta2 * dt**2 * Krom_ii / 2 + dt * Drom_ii / 2
+                            
+                vector1_ii = From[:, ii]
+                vector2_ii = np.dot(Krom_ii, self.__qU_rand[:, ii - 1, jj] + dt * self.__qV_rand[:, ii - 1, jj] + 0.5 * (1 - beta2) * dt**2 * self.__qA_rand[:, ii - 1, jj])
+                vector3_ii = np.dot(Drom_ii, self.__qV_rand[:, ii - 1, jj] + dt * self.__qA_rand[:, ii - 1, jj] / 2)
+                            
+                qA_ii = np.linalg.solve(matrix_ii, vector1_ii - vector2_ii - vector3_ii)
+                qV_ii = self.__qV_rand[:, ii - 1, jj] + dt * (beta1 * qA_ii + (1 - beta1) * self.__qA_rand[:, ii - 1, jj])
+                qU_ii = self.__qU_rand[:, ii - 1, jj] + dt * self.__qV_rand[:, ii - 1, jj] + dt**2 * (beta2 * qA_ii + (1 - beta2) * self.__qA_rand[:, ii - 1, jj]) / 2
+            
+                self.__qU_rand[:, ii, jj] = qU_ii
+                self.__qV_rand[:, ii, jj] = qV_ii
+                self.__qA_rand[:, ii, jj] = qA_ii
+                
+                prev_t = t_ii
+                                        
+            self.__mat_U_rand_observed = np.dot(self.__structure.get_modes()[self.__structure.get_mesh().get_observed_dofs(), :], np.squeeze(self.__qU_rand[:, :, jj]))
+            self.__mat_V_rand_observed = np.dot(self.__structure.get_modes()[self.__structure.get_mesh().get_observed_dofs(), :], np.squeeze(self.__qV_rand[:, :, jj]))
+            self.__mat_A_rand_observed = np.dot(self.__structure.get_modes()[self.__structure.get_mesh().get_observed_dofs(), :], np.squeeze(self.__qA_rand[:, :, jj]))
+            
+            self.__array_U_rand_observed[:, :, jj] = self.__mat_U_rand_observed
+            self.__array_V_rand_observed[:, :, jj] = self.__mat_V_rand_observed
+            self.__array_A_rand_observed[:, :, jj] = self.__mat_A_rand_observed
+            
+        if add_deterministic == True:
+            
+            print("Deterministic case...")
+            
+            Mrom = self.__structure.get_Mrom()
+            Krom = self.__structure.get_Krom()
+            Drom = self.__structure.get_Drom()
+            
+            self.__qU = np.zeros((n_modes, n_timesteps))
+            self.__qV = np.zeros((n_modes, n_timesteps))
+            self.__qA = np.zeros((n_modes, n_timesteps))
+                
+            for ii in range(1, n_timesteps):
+            
+                t_ii = self.__x_axis[ii]
+                
+                dt = t_ii - prev_t
+                
+                matrix_ii = Mrom + beta2 * dt**2 * Krom / 2 + dt * Drom / 2
+                            
+                vector1_ii = From[:, ii]
+                vector2_ii = np.dot(Krom, self.__qU[:, ii - 1] + dt * self.__qV[:, ii - 1] + 0.5 * (1 - beta2) * dt**2 * self.__qA[:, ii - 1])
+                vector3_ii = np.dot(Drom, self.__qV[:, ii - 1] + dt * self.__qA[:, ii - 1] / 2)
+                            
+                qA_ii = np.linalg.solve(matrix_ii, vector1_ii - vector2_ii - vector3_ii)
+                qV_ii = self.__qV[:, ii - 1] + dt * (beta1 * qA_ii + (1 - beta1) * self.__qA[:, ii - 1])
+                qU_ii = self.__qU[:, ii - 1] + dt * self.__qV[:, ii - 1] + dt**2 * (beta2 * qA_ii + (1 - beta2) * self.__qA[:, ii - 1]) / 2
+            
+                self.__qU[:, ii] = qU_ii
+                self.__qV[:, ii] = qV_ii
+                self.__qA[:, ii] = qA_ii
+                
+                prev_t = t_ii
+                            
+            self.__mat_U_observed = np.dot(self.__structure.get_modes()[self.__structure.get_mesh().get_observed_dofs(), :], self.__qU)
+            self.__mat_V_observed = np.dot(self.__structure.get_modes()[self.__structure.get_mesh().get_observed_dofs(), :], self.__qV)
+            self.__mat_A_observed = np.dot(self.__structure.get_modes()[self.__structure.get_mesh().get_observed_dofs(), :], self.__qA)
+            
+        print("End of stochastic time-domain resolution.")
+    
     def linear_frequency_solver_UQ(self, vec_f, n_modes, n_samples, dispersion_coefficient_M, dispersion_coefficient_K, add_deterministic=False, verbose=True):
         self.__x_axis = vec_f
         vec_w = 2 * np.pi * vec_f
@@ -388,10 +522,6 @@ class Solver:
         Mrom_rand = self.__structure.get_Mrom_rand()
         Krom_rand = self.__structure.get_Krom_rand()
         Drom_rand = self.__structure.get_Drom_rand()
-        
-        Mrom_mean = np.mean(Mrom_rand, axis=2)
-        Krom_mean = np.mean(Krom_rand, axis=2)
-        Drom_mean = np.mean(Drom_rand, axis=2)
                 
         self.__force.compute_F0()
         self.__force.compute_varying_F(n_freqsteps)
@@ -432,13 +562,11 @@ class Solver:
             
         if add_deterministic == True:
             
+            print("Deterministic case...")
+            
             Mrom = self.__structure.get_Mrom()
             Krom = self.__structure.get_Krom()
             Drom = self.__structure.get_Drom()
-            
-            print(np.linalg.norm(Mrom_mean - Mrom) / np.linalg.norm(Mrom))
-            print(np.linalg.norm(Krom_mean - Krom) / np.linalg.norm(Krom))
-            print(np.linalg.norm(Drom_mean - Drom) / np.linalg.norm(Drom))
             
             self.__qU = np.zeros((n_modes, n_freqsteps), dtype=np.csingle)
                 
@@ -455,7 +583,6 @@ class Solver:
                 self.__qU[:, ii] = qU_ii
                             
             self.__mat_U_observed = np.abs(np.dot(self.__structure.get_modes()[self.__structure.get_mesh().get_observed_dofs(), :], self.__qU))
-            
             
         print("End of stochastic frequency-domain resolution.")
         
