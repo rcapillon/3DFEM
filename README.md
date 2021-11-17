@@ -65,7 +65,7 @@ New features will be added over time.
 
 ### Frequency-domain dynamics
 
-*Linear elastic plate excited by a nodal force at the center of the upper face*
+*Linear elastic plate excited by a nodal force at the center of the upper face. Nonparametric probabilistic modeling for the mass, stiffness and damping reduced matrices.*
 
 Deformed mesh at 15500 Hz | Deformed mesh at 16250 Hz | Deformed mesh at 17000 Hz
 :------------------------:|:-------------------------:|:-------------------------:
