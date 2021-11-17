@@ -71,11 +71,11 @@ Deformed mesh at 15500 Hz | Deformed mesh at 16250 Hz | Deformed mesh at 17000 H
 :------------------------:|:-------------------------:|:-------------------------:
 ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_15500Hz.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_16250Hz.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_17000Hz.png)
 
-Deterministic FRF at excitated DOF | Deterministic FRF at observed point                                                                   
+Deterministic FRF at excited DOF | Deterministic FRF at observed point                                                                   
 :---------------------------------:|:----------------------------------:
 ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf2.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf1.png)
 
-Stochastic FRF at excitated DOF | Stochastic FRF at observed point                                                                   
+Stochastic FRF at excited DOF | Stochastic FRF at observed point                                                                   
 :---------------------------------:|:----------------------------------:
 ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/UQ_plate_frf2.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/UQ_plate_frf1.png)
 
