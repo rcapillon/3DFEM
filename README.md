@@ -1,7 +1,7 @@
 # 3DFEM
 ## Python 3D finite element code
 
-This python code allows for solving 3D structural problems using the finite element method.
+This python code allows for solving 3D structural problems using the finite element method, with uncertainty propagation capabilities using the Direct Monte Carlo Method.
 New features will be added over time.
 
 *This code has **NOT** been validated on reference cases yet.*
@@ -41,9 +41,13 @@ New features will be added over time.
 * Linear static analysis
 * Linear frequency-domain dynamics using a reduced-order model based on elastic modes
 * Linear time-domain dynamics using the Newmark scheme and a reduced-order model based on elastic modes
+* Uncertainty Quantification:
+- **Nonparametric** probabilistic models for reduced matrices for linear frequency-domain dynamics
+- Direct Monte Carlo method for uncertainty propagation
 
 ### Post-processing
 * Plotting of Frequency-Response Functions (FRF), time trajectories
+* Plotting of confidence intervals on FRF in stochastic simulations
 * Export of a deformed mesh to VTK format (PolyData legacy format)
 * Export of a series of deformed meshes to VTK format for animations (for visualizing elastic modes, or deformations in time-domain dynamical analyses)
 
@@ -67,9 +71,13 @@ Deformed mesh at 15500 Hz | Deformed mesh at 16250 Hz | Deformed mesh at 17000 H
 :------------------------:|:-------------------------:|:-------------------------:
 ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_15500Hz.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_16250Hz.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_17000Hz.png)
 
-FRF at excitated DOF | FRF at observed point                                                                   
-:-------------------:|:---------------------:
+Deterministic FRF at excitated DOF | Deterministic FRF at observed point                                                                   
+:---------------------------------:|:----------------------------------:
 ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf2.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf1.png)
+
+Stochastic FRF at excitated DOF | Stochastic FRF at observed point                                                                   
+:---------------------------------:|:----------------------------------:
+![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/UQ_plate_frf2.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/UQ_plate_frf1.png)
 
 ### Time-domain dynamics
 
@@ -110,14 +118,12 @@ Deformed mesh animation
 ### Solvers
 * Newton-Raphson method for geometrically nonlinear elastostatics and elastodynamics
 * Arc-length method for geometrically nonlinear elastostatics and elastodynamics with strong nonlinearities (e.g. post-buckling analysis)
+* Uncertainty Quantification:
+- **Parametric** probabilistic models for material properties
+- **Nonparametric** probabilistic models for reduced matrices for all dynamics solvers
+* Gaussian Kernel Density Estimation (GKDE) for the estimation of probability density functions of observable quantities
+* Causal nonparametric probabilistic models (linear viscoelasticity)
 
 ### Post-processing
 * Plotting of modal coordinates at given step
 * Support for including element stress and strain components in the VTK files
-
-### Uncertainty Quantification
-* Typical Maximum Entropy-probability distributions for elastic coefficients (Young's modulus, Poisson's ratio, anisotropic coefficients) for **parametric uncertainties**
-* Typical Maximum Entropy-probability distributions for mass, linear elastic stiffness, Rayleigh damping and linear viscoelastic damping matrices for **nonparametric uncertainties**
-* Monte Carlo method for uncertainty propagation with plotting of confidence intervals
-* Gaussian Kernel Density Estimation (GKDE) for the estimation of probability density functions of observable quantities
-* Causal nonparametric probabilistic models (linear viscoelasticity)
