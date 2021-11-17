@@ -61,7 +61,7 @@ New features will be added over time.
 
  Deformed mesh animation
 :-----------------------:
-![](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_mode1.gif)
+<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_mode1.gif" width="400"> |
 
 ### Frequency-domain dynamics
 
@@ -69,15 +69,15 @@ New features will be added over time.
 
 Deformed mesh at 15500 Hz | Deformed mesh at 16250 Hz | Deformed mesh at 17000 Hz
 :------------------------:|:-------------------------:|:-------------------------:
-![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_15500Hz.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_16250Hz.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_17000Hz.png)
+<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_15500Hz.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_16250Hz.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_17000Hz.png" width="400">
 
 Deterministic FRF at excited DOF | Stochastic FRF at excited DOF                                                                  
 :---------------------------------:|:----------------------------------:
-![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf2.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/UQ_plate_frf2.png)
+<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf2.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/UQ_plate_frf2.png" width="400">
 
 Deterministic FRF at observed DOF | Stochastic FRF at observed DOF                                                                  
 :---------------------------------:|:----------------------------------:
-![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf1.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/UQ_plate_frf1.png)
+<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf1.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/UQ_plate_frf1.png" width="400">
 
 ### Time-domain dynamics
 
@@ -85,15 +85,15 @@ Deterministic FRF at observed DOF | Stochastic FRF at observed DOF
 
 Deformed mesh animation
 :----------------------:
-![](https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_dynamics.gif)
+<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_dynamics.gif" width="400"> |
 
 Deterministic displacement at excited DOF | Stochastic displacement at excited DOF
 :----:|:----:
-![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/beam_time_displacement2.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/UQ_beam_time_displacement2.png)
+<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/beam_time_displacement2.png" width="400">! | <img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/UQ_beam_time_displacement2.png" width="400">
 
 Deterministic displacement at observed DOF | Stochastic displacement at observed DOF
 :----:|:----:
-![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/beam_time_displacement1.png) | ![](https://github.com/rcapillon/3DFEM/blob/main/visuals/images/UQ_beam_time_displacement1.png)
+<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/beam_time_displacement1.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/UQ_beam_time_displacement1.png" width="400">
 
 ----
 
