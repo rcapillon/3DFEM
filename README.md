@@ -49,7 +49,7 @@ New features will be added over time.
 * Plotting of Frequency-Response Functions (FRF), time trajectories
 * Plotting of confidence intervals on FRF and time trajectories in stochastic simulations
 * Export of a deformed mesh to VTK format (PolyData legacy format)
-* Export of a series of deformed meshes to VTK format for animations (for visualizing elastic modes, or deformations in time-domain dynamical analyses)
+* Export of a series of deformed meshes to VTK format for animations (elastic modes, time-domain solutions)
 
 ----
 
