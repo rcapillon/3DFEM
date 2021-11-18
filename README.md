@@ -42,7 +42,7 @@ New features will be added over time.
 * Linear frequency-domain dynamics using a reduced-order model based on elastic modes
 * Linear time-domain dynamics using the Newmark scheme and a reduced-order model based on elastic modes
 * Uncertainty Quantification:
-  - **Nonparametric** probabilistic models for reduced matrices in dynamics solvers
+  - Nonparametric probabilistic models for reduced matrices in dynamics solvers
   - Direct Monte Carlo method for uncertainty propagation
 
 ### Post-processing
@@ -65,7 +65,7 @@ New features will be added over time.
 
 ### Frequency-domain dynamics
 
-*Linear elastic plate excited by a nodal force at the center of the upper face. Nonparametric probabilistic modeling for the mass, stiffness and damping reduced matrices.*
+*Linear elastic plate excited by a nodal force at the center of the upper face. Nonparametric probabilistic modeling of uncertainties for the mass, stiffness and damping reduced matrices.*
 
 Deformed mesh at 15500 Hz | Deformed mesh at 16250 Hz | Deformed mesh at 17000 Hz
 :------------------------:|:-------------------------:|:-------------------------:
