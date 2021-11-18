@@ -123,8 +123,8 @@ Deterministic displacement at observed DOF | Stochastic displacement at observed
 * Uncertainty Quantification:
   - **Parametric** probabilistic models for material properties
   - **Nonparametric** probabilistic models for reduced matrices for all dynamics solvers
-* Gaussian Kernel Density Estimation (GKDE) for the estimation of probability density functions of observable quantities
-* Causal nonparametric probabilistic models (linear viscoelasticity)
+  - Gaussian Kernel Density Estimation (GKDE) for the estimation of probability density functions of observable quantities
+  - Causal nonparametric probabilistic models (linear viscoelasticity)
 
 ### Post-processing
 * Plotting of modal coordinates at given step
