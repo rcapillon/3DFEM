@@ -92,6 +92,7 @@ Visuals of results from the various provided sample scripts can be found [here](
 * Uncertainty Quantification:
   - Parametric probabilistic models for all elastic coefficients
   - Causal nonparametric probabilistic models for linear viscoelastic materials
+* Parallelization of stochastic solvers
 
 ### Post-processing
 * Plotting of modal coordinates at given step
