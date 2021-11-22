@@ -55,45 +55,11 @@ New features will be added over time.
 
 ## Examples of solutions
 
-### Modal analysis
+Visuals of results from the various provided sample scripts can be found [here](https://github.com/rcapillon/3DFEM/blob/main/results/README.md).
 
-*First linear elastic mode of a clamped-clamped beam*
-
- Deformed mesh animation
-:-----------------------:
-<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_mode1.gif" width="400"> |
-
-### Frequency-domain dynamics
-
-*Linear elastic plate excited by a nodal force at the center of the upper face. Nonparametric probabilistic modeling of uncertainties for the mass, stiffness and damping reduced matrices.*
-
-Deformed mesh at 15500 Hz | Deformed mesh at 16250 Hz | Deformed mesh at 17000 Hz
-:------------------------:|:-------------------------:|:-------------------------:
-<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_15500Hz.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_16250Hz.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frequency_17000Hz.png" width="400">
-
-Deterministic FRF at excited DOF | Stochastic FRF at excited DOF                                                                  
-:---------------------------------:|:----------------------------------:
-<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf2.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/UQ_plate_frf2.png" width="400">
-
-Deterministic FRF at observed DOF | Stochastic FRF at observed DOF                                                                  
-:---------------------------------:|:----------------------------------:
-<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/plate_frf1.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/UQ_plate_frf1.png" width="400">
-
-### Time-domain dynamics
-
-*Linear elastic cantilever beam with Rayleigh damping pulled up by a constant force on its free end, then released*
-
-Deformed mesh animation
-:----------------------:
-<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/animations/beam_dynamics.gif" width="400"> |
-
-Deterministic displacement at excited DOF | Stochastic displacement at excited DOF
-:----:|:----:
-<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/beam_time_displacement2.png" width="400">! | <img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/UQ_beam_time_displacement2.png" width="400">
-
-Deterministic displacement at observed DOF | Stochastic displacement at observed DOF
-:----:|:----:
-<img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/beam_time_displacement1.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/visuals/images/UQ_beam_time_displacement1.png" width="400">
+|||
+|:----:|:----:|
+| <img src="https://github.com/rcapillon/3DFEM/blob/main/results/time_beam/animation_time_beam.gif" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF5_3generalized.png" width="400"> |
 
 ----
 
