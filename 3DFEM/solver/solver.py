@@ -36,7 +36,9 @@ class Solver:
     def modal_solver(self, n_modes):
         # Eigenvectors are mass-normalized
         
-        self.__structure.compute_M_K()
+        self.__structure.compute_factorized_M_K_vectors()
+        self.__structure.compute_factorized_M_K()
+        # self.compute_M_K()
         self.__structure.apply_dirichlet_M()
         self.__structure.apply_dirichlet_K()
         
@@ -82,16 +84,18 @@ class Solver:
         
         print("Computing reduced-order model...")
         
-        self.__structure.compute_linear_ROM(n_modes)
-                
-        self.__force.compute_F0()
-        self.__force.compute_varying_F(n_timesteps)
-        self.__force.apply_dirichlet_F()
-                
+        self.__structure.get_mesh().compute_sub_elements_lists()
+        self.__structure.compute_modes(n_modes)
+        self.__structure.compute_linear_ROM()
+        
         Mrom = self.__structure.get_Mrom()
         Krom = self.__structure.get_Krom()
         Drom = self.__structure.get_Drom()
-                
+        
+        self.__force.compute_F0()
+        self.__force.compute_varying_F(n_timesteps)
+        self.__force.apply_dirichlet_F()
+        
         From = np.dot(self.__structure.get_modesL().transpose(), self.__force.get_FL())
         
         print("Applying initial conditions...")
@@ -153,15 +157,17 @@ class Solver:
         
         print("Computing reduced-order model...")
         
-        self.__structure.compute_linear_diagonal_ROM(n_modes)
-                
-        self.__force.compute_F0()
-        self.__force.compute_varying_F(n_timesteps)
-        self.__force.apply_dirichlet_F()
-                
+        self.__structure.get_mesh().compute_sub_elements_lists()
+        self.__structure.compute_modes(n_modes)
+        self.__structure.compute_linear_diagonal_ROM()
+        
         Mrom = self.__structure.get_Mrom()
         Krom = self.__structure.get_Krom()
         Drom = self.__structure.get_Drom()
+        
+        self.__force.compute_F0()
+        self.__force.compute_varying_F(n_timesteps)
+        self.__force.apply_dirichlet_F()
         
         From = np.dot(self.__structure.get_modesL().transpose(), self.__force.get_FL())
         
@@ -222,16 +228,18 @@ class Solver:
         n_freqsteps = len(self.__x_axis)
         
         print("Computing reduced-order model...")
+                
+        self.__structure.get_mesh().compute_sub_elements_lists()
+        self.__structure.compute_modes(n_modes)
+        self.__structure.compute_linear_ROM()
         
-        self.__structure.compute_linear_ROM(n_modes)
-                
-        self.__force.compute_F0()
-        self.__force.compute_varying_F(n_freqsteps)
-        self.__force.apply_dirichlet_F()
-                
         Mrom = self.__structure.get_Mrom()
         Krom = self.__structure.get_Krom()
         Drom = self.__structure.get_Drom()
+        
+        self.__force.compute_F0()
+        self.__force.compute_varying_F(n_freqsteps)
+        self.__force.apply_dirichlet_F()
         
         From = np.dot(self.__structure.get_modesL().transpose(), self.__force.get_FL())
         
@@ -266,16 +274,18 @@ class Solver:
         n_freqsteps = len(self.__x_axis)
         
         print("Computing reduced-order model...")
+                
+        self.__structure.get_mesh().compute_sub_elements_lists()
+        self.__structure.compute_modes(n_modes)
+        self.__structure.compute_linear_diagonal_ROM()
         
-        self.__structure.compute_linear_diagonal_ROM(n_modes)
-                
-        self.__force.compute_F0()
-        self.__force.compute_varying_F(n_freqsteps)
-        self.__force.apply_dirichlet_F()
-                
         Mrom = self.__structure.get_Mrom()
         Krom = self.__structure.get_Krom()
         Drom = self.__structure.get_Drom()
+        
+        self.__force.compute_F0()
+        self.__force.compute_varying_F(n_freqsteps)
+        self.__force.apply_dirichlet_F()
         
         From = np.dot(self.__structure.get_modesL().transpose(), self.__force.get_FL())
         
@@ -375,56 +385,79 @@ class Solver:
         
         return vec_U
     
-    def linear_newmark_solver_UQ(self, beta1, beta2, vec_t, n_modes, n_samples, dispersion_coefficient_M, dispersion_coefficient_K, add_deterministic=False, verbose=True):
+    def linear_newmark_solver_UQ(self, beta1, beta2, vec_t, n_modes, uncertainty_type="nonparametric", add_deterministic=False, verbose=True):
         self.__x_axis = vec_t
         
         n_timesteps = len(self.__x_axis)
-        
-        self.__structure.set_n_samples(n_samples)
-        self.__structure.set_dispersion_coefficient_M(dispersion_coefficient_M)
-        self.__structure.set_dispersion_coefficient_K(dispersion_coefficient_K)
-        
+                
         print("Computing reduced-order model...")
         
-        self.__structure.compute_linear_ROM(n_modes)
-        self.__structure.generate_random_matrices()
+        self.__structure.get_mesh().compute_sub_elements_lists()
+        self.__structure.compute_modes(n_modes)
+        self.__structure.compute_linear_ROM()
         
-        Mrom_rand = self.__structure.get_Mrom_rand()
-        Krom_rand = self.__structure.get_Krom_rand()
-        Drom_rand = self.__structure.get_Drom_rand()
-                
         self.__force.compute_F0()
         self.__force.compute_varying_F(n_timesteps)
         self.__force.apply_dirichlet_F()
         
         From = np.dot(self.__structure.get_modesL().transpose(), self.__force.get_FL())
         
+        print("Generating random matrices...")
+        
+        self.__structure.generate_random_matrices(uncertainty_type)
+        
+        Mrom_rand = self.__structure.get_Mrom_rand()
+        Krom_rand = self.__structure.get_Krom_rand()
+        Drom_rand = self.__structure.get_Drom_rand()
+        
         print("Applying initial conditions...")
         
         qU0 = np.dot(self.__structure.get_modesL().transpose(), self.__structure.get_U0L())
+        qU0 = np.reshape(qU0, (n_modes, 1))
         qV0 = np.dot(self.__structure.get_modesL().transpose(), self.__structure.get_V0L())
+        qV0 = np.reshape(qV0, (n_modes, 1))
         qA0 = np.dot(self.__structure.get_modesL().transpose(), self.__structure.get_A0L())
+        qA0 = np.reshape(qA0, (n_modes, 1))
         
-        self.__qU = np.zeros((n_modes, n_timesteps))
-        self.__qV = np.zeros((n_modes, n_timesteps))
-        self.__qA = np.zeros((n_modes, n_timesteps))
+        self.__qU_rand = np.zeros((n_modes, n_timesteps, self.__structure.get_n_samples()))
+        self.__qV_rand = np.zeros((n_modes, n_timesteps, self.__structure.get_n_samples()))
+        self.__qA_rand = np.zeros((n_modes, n_timesteps, self.__structure.get_n_samples()))
         
-        self.__qU[:, 0] = qU0
-        self.__qV[:, 0] = qV0
-        self.__qA[:, 0] = qA0
+        self.__qU_rand[:, 0, :] = np.tile(qU0, (1, self.__structure.get_n_samples()))
+        self.__qV_rand[:, 0, :] = np.tile(qV0, (1, self.__structure.get_n_samples()))
+        self.__qA_rand[:, 0, :] = np.tile(qA0, (1, self.__structure.get_n_samples()))
+        
+        self.__array_U_rand_observed = np.zeros((self.__structure.get_mesh().get_n_observed_dofs(), n_timesteps, self.__structure.get_n_samples()))
+        self.__array_V_rand_observed = np.zeros((self.__structure.get_mesh().get_n_observed_dofs(), n_timesteps, self.__structure.get_n_samples()))
+        self.__array_A_rand_observed = np.zeros((self.__structure.get_mesh().get_n_observed_dofs(), n_timesteps, self.__structure.get_n_samples()))
+        
+        U0L = self.__structure.get_U0L()
+        U0 = np.zeros((self.__structure.get_n_total_dofs(),))
+        U0[self.__structure.get_mesh().get_free_dofs()] = U0L
+        U0_obs = U0[self.__structure.get_mesh().get_observed_dofs()]
+        U0_obs = np.reshape(U0_obs, (self.__structure.get_mesh().get_n_observed_dofs(), 1))
+        
+        V0L = self.__structure.get_V0L()
+        V0 = np.zeros((self.__structure.get_n_total_dofs(),))
+        V0[self.__structure.get_mesh().get_free_dofs()] = V0L
+        V0_obs = V0[self.__structure.get_mesh().get_observed_dofs()]
+        V0_obs = np.reshape(V0_obs, (self.__structure.get_mesh().get_n_observed_dofs(), 1))
+        
+        A0L = self.__structure.get_A0L()
+        A0 = np.zeros((self.__structure.get_n_total_dofs(),))
+        A0[self.__structure.get_mesh().get_free_dofs()] = A0L
+        A0_obs = A0[self.__structure.get_mesh().get_observed_dofs()]
+        A0_obs = np.reshape(A0_obs, (self.__structure.get_mesh().get_n_observed_dofs(), 1))
+                
+        self.__array_U_rand_observed[:, 0, :] = np.tile(U0_obs, (1, self.__structure.get_n_samples()))
+        self.__array_V_rand_observed[:, 0, :] = np.tile(V0_obs, (1, self.__structure.get_n_samples()))
+        self.__array_A_rand_observed[:, 0, :] = np.tile(A0_obs, (1, self.__structure.get_n_samples()))
         
         # resolution
         
         print("Starting stochastic time-domain resolution...")
-        
-        self.__qU_rand = np.zeros((n_modes, n_timesteps, n_samples))
-        self.__qV_rand = np.zeros((n_modes, n_timesteps, n_samples))
-        self.__qA_rand = np.zeros((n_modes, n_timesteps, n_samples))
-        self.__array_U_rand_observed = np.zeros((self.__structure.get_mesh().get_n_observed_dofs(), n_timesteps, n_samples))
-        self.__array_V_rand_observed = np.zeros((self.__structure.get_mesh().get_n_observed_dofs(), n_timesteps, n_samples))
-        self.__array_A_rand_observed = np.zeros((self.__structure.get_mesh().get_n_observed_dofs(), n_timesteps, n_samples))
             
-        for jj in range(n_samples):
+        for jj in range(self.__structure.get_n_samples()):
             
             if verbose == True:
                 print("Sample n° ", jj)
@@ -469,6 +502,12 @@ class Solver:
             
             print("Deterministic case...")
             
+            if uncertainty_type == "parametric" or uncertainty_type == "generalized":
+                self.__structure.compute_factorized_M_K()
+                self.__structure.apply_dirichlet_M()
+                self.__structure.apply_dirichlet_K()
+                self.__structure.compute_linear_ROM()
+            
             Mrom = self.__structure.get_Mrom()
             Krom = self.__structure.get_Krom()
             Drom = self.__structure.get_Drom()
@@ -505,38 +544,39 @@ class Solver:
             
         print("End of stochastic time-domain resolution.")
     
-    def linear_frequency_solver_UQ(self, vec_f, n_modes, n_samples, dispersion_coefficient_M, dispersion_coefficient_K, add_deterministic=False, verbose=True):
+    def linear_frequency_solver_UQ(self, vec_f, n_modes, uncertainty_type="nonparametric", add_deterministic=False, verbose=True):
         self.__x_axis = vec_f
         vec_w = 2 * np.pi * vec_f
         n_freqsteps = len(self.__x_axis)
-        
-        self.__structure.set_n_samples(n_samples)
-        self.__structure.set_dispersion_coefficient_M(dispersion_coefficient_M)
-        self.__structure.set_dispersion_coefficient_K(dispersion_coefficient_K)
-        
+                
         print("Computing reduced-order model...")
         
-        self.__structure.compute_linear_ROM(n_modes)
-        self.__structure.generate_random_matrices()
+        self.__structure.get_mesh().compute_sub_elements_lists()
+        self.__structure.compute_modes(n_modes)
+        self.__structure.compute_linear_ROM()
         
-        Mrom_rand = self.__structure.get_Mrom_rand()
-        Krom_rand = self.__structure.get_Krom_rand()
-        Drom_rand = self.__structure.get_Drom_rand()
-                
         self.__force.compute_F0()
         self.__force.compute_varying_F(n_freqsteps)
         self.__force.apply_dirichlet_F()
         
         From = np.dot(self.__structure.get_modesL().transpose(), self.__force.get_FL())
         
+        print("Generating random matrices...")
+        
+        self.__structure.generate_random_matrices(uncertainty_type)
+        
+        Mrom_rand = self.__structure.get_Mrom_rand()
+        Krom_rand = self.__structure.get_Krom_rand()
+        Drom_rand = self.__structure.get_Drom_rand()
+        
         # resolution
         
         print("Starting stochastic frequency-domain resolution...")
         
-        self.__qU_rand = np.zeros((n_modes, n_freqsteps, n_samples), dtype=np.csingle)
-        self.__array_U_rand_observed = np.zeros((self.__structure.get_mesh().get_n_observed_dofs(), n_freqsteps, n_samples))
+        self.__qU_rand = np.zeros((n_modes, n_freqsteps, self.__structure.get_n_samples()), dtype=np.csingle)
+        self.__array_U_rand_observed = np.zeros((self.__structure.get_mesh().get_n_observed_dofs(), n_freqsteps, self.__structure.get_n_samples()))
            
-        for jj in range(n_samples):
+        for jj in range(self.__structure.get_n_samples()):
             
             if verbose == True:
                 print("Sample n° ", jj)
@@ -563,6 +603,12 @@ class Solver:
         if add_deterministic == True:
             
             print("Deterministic case...")
+            
+            if uncertainty_type == "parametric" or uncertainty_type == "generalized":
+                self.__structure.compute_factorized_M_K()
+                self.__structure.apply_dirichlet_M()
+                self.__structure.apply_dirichlet_K()
+                self.__structure.compute_linear_ROM()
             
             Mrom = self.__structure.get_Mrom()
             Krom = self.__structure.get_Krom()

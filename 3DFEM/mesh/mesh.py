@@ -30,7 +30,7 @@ class Mesh:
         self.__n_elements = len(elem_list)
         self.__elements_list = elem_list
         
-    def delaunay3D_from_points(self, rho, Y, nu):
+    def delaunay3D_from_points(self, material):
         tri = scipy.spatial.Delaunay(self.__points)
         self.__points = tri.points
         self.__n_elements = tri.simplices.shape[0]
@@ -54,7 +54,7 @@ class Mesh:
                 nodes_coords = self.__points[nodes_ii,:]
                 
             if mixed_product != 0:
-                element_ii = tet4.Tet4(rho, Y, nu, nodes_coords)
+                element_ii = tet4.Tet4(material, nodes_coords)
                 element_ii.set_element_number(elem_counter)
                 element_ii.set_nodes_dofs(nodes_ii)
                 self.__elements_list.append(element_ii)
@@ -90,6 +90,14 @@ class Mesh:
     def set_dirichlet(self, ls_dofs_dir):
         self.__ls_dofs_dir = ls_dofs_dir
         self.__ls_dofs_free = list(set(range(self.__n_total_dofs)) - set(ls_dofs_dir))
+        self.__n_dofs_dir = len(self.__ls_dofs_dir)
+        self.__n_dofs_free = len(self.__ls_dofs_free)
+        
+    def get_n_dofs_dir(self):
+        return self.__n_dofs_dir
+    
+    def get_n_dofs_free(self):
+        return self.__n_dofs_free
         
     def get_dirichlet_dofs(self):
         return self.__ls_dofs_dir
@@ -110,3 +118,37 @@ class Mesh:
     
     def get_n_observed_dofs(self):
         return self.__n_dofs_observed
+    
+    def compute_random_materials(self):
+        for ii in range(len(self.__id_list)):
+            self.__list_of_elements_lists[ii][0].get_material().compute_random_material()
+    
+    def set_random_materials(self, index):
+        for ii in range(len(self.__id_list)):
+            self.__list_of_elements_lists[ii][0].get_material().set_random_material(index)
+        
+    def restore_materials(self):
+        for ii in range(len(self.__id_list)):
+            self.__list_of_elements_lists[ii][0].get_material().restore_material()
+            
+    def compute_sub_elements_lists(self):
+        self.__id_list = []
+        self.__list_of_elements_lists = []
+        
+        for element in self.__elements_list:
+            element_id = element.get_material().get_id()
+            if element_id not in self.__id_list:
+                self.__id_list.append(element_id)
+                self.__list_of_elements_lists.append([])
+                self.__list_of_elements_lists[self.__id_list.index(element_id)].append(element)
+            else:
+                self.__list_of_elements_lists[self.__id_list.index(element_id)].append(element)
+                
+    def get_id_list(self):
+        return self.__id_list
+    
+    def get_list_of_elements_lists(self):
+        return self.__list_of_elements_lists
+                
+        
+                

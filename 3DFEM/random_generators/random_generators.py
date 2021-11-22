@@ -10,7 +10,7 @@
 
 import numpy as np
 
-def matrix_SG0plus(size, dispersion_coefficient):
+def matrix_SGplus(size, dispersion_coefficient):
     mat_L_T = np.zeros((size, size))
     
     sigma = dispersion_coefficient / np.sqrt(size + 1)
@@ -29,12 +29,19 @@ def matrix_SG0plus(size, dispersion_coefficient):
     
     return random_matrix
 
-def matrices_wishart(n_samples, mean_cholesky_matrix, dispersion_coefficient): 
+def matrices_SEplus(n_samples, mean_cholesky_matrix, dispersion_coefficient): 
     random_matrices = np.zeros(mean_cholesky_matrix.shape + (n_samples,))
     
     for ii in range(n_samples):
-        mat_G0 = matrix_SG0plus(mean_cholesky_matrix.shape[0], dispersion_coefficient)
-        random_matrix = np.dot(mean_cholesky_matrix, np.dot(mat_G0, mean_cholesky_matrix.transpose()))
-        random_matrices[:, :, ii] = random_matrix
+        mat_G0 = matrix_SGplus(mean_cholesky_matrix.shape[0], dispersion_coefficient)
+        random_matrices[:, :, ii] = np.dot(mean_cholesky_matrix, np.dot(mat_G0, mean_cholesky_matrix.transpose()))
     
     return random_matrices
+
+def scalars_gamma(n_samples, mean_value, dispersion_coefficient):
+    gamma_shape = 1.0 / dispersion_coefficient**2
+    gamma_scale = mean_value * dispersion_coefficient**2
+    
+    random_scalars = np.random.gamma(gamma_shape, gamma_scale, (n_samples,))
+    
+    return random_scalars

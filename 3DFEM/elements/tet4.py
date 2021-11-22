@@ -154,8 +154,8 @@ tet4_mat_De_gauss = tet4_compute_mat_De()
 ##############################################################################
 
 class Tet4(element.Element):
-    def __init__(self, rho, Y, nu, nodes_coords):
-        super(Tet4, self).__init__(rho, Y, nu)
+    def __init__(self, material, nodes_coords):
+        super(Tet4, self).__init__(material)
         
         self.__nodes_coords = nodes_coords
         self.__vec_nodes_coords = np.reshape(nodes_coords, tet4_n_dofs)
@@ -227,7 +227,7 @@ class Tet4(element.Element):
         counter = 0
         for g in self.get_gauss():
             gauss_weight = g[1]
-            self.__mat_Me += gauss_weight * self.get_rho() * self.__det_J * tet4_mats_EeTEe_gauss[counter] 
+            self.__mat_Me += gauss_weight * self.get_material().get_rho() * self.__det_J * tet4_mats_EeTEe_gauss[counter] 
             counter += 1
             
     def compute_mat_Ke(self):
@@ -238,7 +238,7 @@ class Tet4(element.Element):
         
         for g in self.get_gauss():
             gauss_weight = g[1]
-            self.__mat_Ke += gauss_weight * self.__det_J * np.dot(mat_B.transpose(), np.dot(self.get_mat_C(), mat_B))
+            self.__mat_Ke += gauss_weight * self.__det_J * np.dot(mat_B.transpose(), np.dot(self.get_material().get_mat_C(), mat_B))
     
     def compute_mat_Me_mat_Ke(self):
         self.__mat_Me = np.zeros((tet4_n_dofs, tet4_n_dofs))
@@ -250,8 +250,8 @@ class Tet4(element.Element):
         counter = 0
         for g in self.get_gauss():
             gauss_weight = g[1]
-            self.__mat_Me += gauss_weight * self.get_rho() * self.__det_J * tet4_mats_EeTEe_gauss[counter]
-            self.__mat_Ke += gauss_weight * self.__det_J * np.dot(mat_B.transpose(), np.dot(self.get_mat_C(), mat_B))
+            self.__mat_Me += gauss_weight * self.get_material().get_rho() * self.__det_J * tet4_mats_EeTEe_gauss[counter]
+            self.__mat_Ke += gauss_weight * self.__det_J * np.dot(mat_B.transpose(), np.dot(self.get_material().get_mat_C(), mat_B))
             counter += 1
     
     def get_mat_Me(self):
@@ -259,6 +259,67 @@ class Tet4(element.Element):
     
     def get_mat_Ke(self):
         return self.__mat_Ke
+    
+    def compute_factorized_mat_Me(self):                        
+        self.__factorized_mat_Me = np.zeros((tet4_n_dofs, tet4_n_dofs))
+        
+        self.__compute_jacobian()
+        
+        counter = 0
+        for g in self.get_gauss():
+            gauss_weight = g[1]
+            self.__factorized_mat_Me += gauss_weight * self.__det_J * tet4_mats_EeTEe_gauss[counter]
+            
+            counter += 1
+            
+    def compute_list_factorized_mat_Ke(self):
+        list_factorized_mat_C = self.get_material().get_factorized_mat_C()
+        
+        n_materials = self.get_material().get_n_factorized_mat_C()
+        
+        self.__list_factorized_mat_Ke = [np.zeros((tet4_n_dofs, tet4_n_dofs)) for jj in range(n_materials)]
+                
+        self.__compute_jacobian()
+        mat_B = np.dot(mat_G, np.dot(self.__mat_invJJJ, np.dot(mat_P, tet4_mat_De_gauss)))
+        
+        counter = 0
+        for g in self.get_gauss():
+            gauss_weight = g[1]
+            
+            for ii in range(n_materials):
+                mat_C = list_factorized_mat_C[ii]
+                self.__list_factorized_mat_Ke[ii] += gauss_weight * self.__det_J * np.dot(mat_B.transpose(), np.dot(mat_C, mat_B))
+            
+            counter += 1
+            
+    def compute_factorized_mat_Me_mat_Ke(self):
+        list_factorized_mat_C = self.get_material().get_factorized_mat_C()
+        
+        n_materials = self.get_material().get_n_factorized_mat_C()
+        
+        self.__list_factorized_mat_Ke = [np.zeros((tet4_n_dofs, tet4_n_dofs)) for jj in range(n_materials)]
+        
+        self.__factorized_mat_Me = np.zeros((tet4_n_dofs, tet4_n_dofs))
+        
+        self.__compute_jacobian()
+        mat_B = np.dot(mat_G, np.dot(self.__mat_invJJJ, np.dot(mat_P, tet4_mat_De_gauss)))
+        
+        counter = 0
+        for g in self.get_gauss():
+            gauss_weight = g[1]
+            self.__factorized_mat_Me += gauss_weight * self.__det_J * tet4_mats_EeTEe_gauss[counter]
+            
+            for ii in range(n_materials):
+                mat_C = list_factorized_mat_C[ii]
+                self.__list_factorized_mat_Ke[ii] += gauss_weight * self.__det_J * np.dot(mat_B.transpose(), np.dot(mat_C, mat_B))
+            
+            counter += 1
+                    
+    def get_factorized_mat_Me(self):
+        return self.__factorized_mat_Me
+    
+    def get_list_factorized_mat_Ke(self):
+        return self.__list_factorized_mat_Ke
     
     def compute_element_strain(self, vec_Ue):        
         nodes_Ue = np.reshape(vec_Ue, (tet4_n_nodes, 3))
@@ -277,7 +338,7 @@ class Tet4(element.Element):
     
     def compute_element_stress(self, vec_Ue):        
         vec_strain = self.compute_element_strain(vec_Ue)
-        vec_stress = np.dot(self.get_mat_C(), vec_strain)
+        vec_stress = np.dot(self.get_material().get_mat_C(), vec_strain)
         
         return vec_stress
         

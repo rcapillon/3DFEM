@@ -15,9 +15,15 @@ spec1 = importlib.util.spec_from_file_location("materials", "../materials/materi
 materials = importlib.util.module_from_spec(spec1)
 spec1.loader.exec_module(materials)
 
-class Element(materials.LinearIsotropicElasticMaterial):
-    def __init__(self, rho, Y, nu):
-        super(Element, self).__init__(rho, Y, nu)
+class Element():
+    def __init__(self, material):
+        self.__material = material
+        
+    def set_material(self, material):
+        self.__material = material
+        
+    def get_material(self):
+        return self.__material
     
     def set_element_number(self, num):
         self.__num = num

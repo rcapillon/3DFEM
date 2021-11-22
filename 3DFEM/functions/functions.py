@@ -99,7 +99,10 @@ def export_mesh_to_vtk(file_name, mesh, n_points=None, n_faces=None, n_cols=None
     
     file.close()
     
-def export_mode_animation(file_name, mesh, mode, scale, n_frames):
+def export_mode_animation(file_name, solver, index_mode, scale, n_frames):
+    mesh = solver.get_structure().get_mesh()
+    
+    mode = solver.get_modes()[:, index_mode]
     
     n_points = mesh.get_n_points()
     
@@ -118,7 +121,9 @@ def export_mode_animation(file_name, mesh, mode, scale, n_frames):
         animation_frame_name = file_name + str(ii)
         export_mesh_to_vtk(animation_frame_name, deformed_mesh, n_points, n_faces, n_cols)
         
-def export_U_on_mesh(file_name, mesh, vec_U, scale):
+def export_U_on_mesh(file_name, solver, vec_U, scale):
+    mesh = solver.get_structure().get_mesh()
+    
     n_points = mesh.get_n_points()
     
     n_faces = 0
@@ -246,7 +251,22 @@ def plot_random_observed_U(file_name, solver, confidence_level, x_name="", y_nam
     
         fig.savefig(image_name + ".png")
         
-def plot_ksdensity_random_observed_U(file_name, solver, confidence_level, num_step, x_name=""):
-    x = solver.get_x_axis()[num_step]
+def plot_ksdensity_random_observed_U(file_name, solver, num_step, x_name="U"):
     ls_dofs_observed = solver.get_structure().get_mesh().get_observed_dofs()
     mat_U = np.squeeze(solver.get_array_U_rand_observed()[:, num_step, :])
+    
+    for ii in range(len(ls_dofs_observed)):
+        dof_number = ls_dofs_observed[ii]
+        image_name = file_name + str(dof_number)
+        
+        vec_U_ii = mat_U[ii, :]
+        kde_ii = stats.gaussian_kde(vec_U_ii)
+        vec_u_ii = np.linspace(vec_U_ii.min(), vec_U_ii.max(), 500)
+        vec_p_ii = kde_ii(vec_u_ii)
+        
+        fig, ax = plt.subplots()
+        ax.plot(vec_u_ii, vec_p_ii)
+        ax.set(xlabel = x_name, ylabel = "Probability density function", title="DOF " + str(dof_number))
+        ax.grid()
+    
+        fig.savefig(image_name + ".png")
