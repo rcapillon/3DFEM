@@ -53,7 +53,7 @@ Probabilistic model for the Young's modulus (parametric uncertainty modeling) as
 
 Deformed mesh
 :----:
-<img src="https://github.com/rcapillon/3DFEM/blob/main/results/time_plate/animation_time_beam.gif" width="400"> |
+<img src="https://github.com/rcapillon/3DFEM/blob/main/results/time_beam/animation_time_beam.gif" width="400"> |
 
 1st observed node, x-displacement | 1st observed node, y-displacement | 1st observed node, z-displacement
 :----:|:----:|:----:
