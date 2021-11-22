@@ -71,9 +71,9 @@ Probabilistic model for the Young's modulus (parametric uncertainty modeling) as
 ### 1st observed node, y-displacement
 | Parametric uncertainty modeling | Nonparametric uncertainty modeling | Generalized approach |
 |----|----|----|
-| <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF5_1parametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF5_2nonparametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/frf_DOF5_3generalized.png" width="400"> |
+| <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF5_1parametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF5_2nonparametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF5_3generalized.png" width="400"> |
 
 ### 2nd observed node, z-displacement
 | Parametric uncertainty modeling | Nonparametric uncertainty modeling | Generalized approach |
 |----|----|----|
-| <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF6_1parametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF6_2nonparametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/frf_DOF6_3generalized.png" width="400"> |
+| <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF6_1parametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF6_2nonparametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF6_3generalized.png" width="400"> |
