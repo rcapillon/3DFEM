@@ -90,6 +90,7 @@ Visuals of results from the various provided sample scripts can be found [here](
 * Newton-Raphson method for geometrically nonlinear elastostatics and elastodynamics
 * Arc-length method for geometrically nonlinear elastostatics and elastodynamics with strong nonlinearities (e.g. post-buckling analysis)
 * Uncertainty Quantification:
+  - Parametric probabilistic models for all elastic coefficients
   - Causal nonparametric probabilistic models for linear viscoelastic materials
 
 ### Post-processing
