@@ -22,7 +22,7 @@ Deformed mesh
 
 Deformed mesh at 16660 Hz
 :----:
-<img src="https://github.com/rcapillon/3DFEM/blob/main/results/freq_plate/image_mesh_16660.png" width="400"> |
+<img src="https://github.com/rcapillon/3DFEM/blob/main/results/freq_plate/image_mesh_16660Hz.png" width="400"> |
 
 FRF at 1st observed node, x-displacement | FRF at 1st observed node, y-displacement | FRF at 1st observed node, z-displacement
 :----:|:----:|:----:
