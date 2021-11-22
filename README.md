@@ -1,7 +1,7 @@
 # 3DFEM
 ## Python 3D finite element code
 
-This python code allows for solving 3D structural problems using the finite element method, with uncertainty propagation capabilities using the Direct Monte Carlo Method.
+This python code allows for solving 3D structural problems with or without uncertainties using the finite element method.
 New features will be added over time.
 
 *This code has **NOT** been validated on reference cases yet.*
