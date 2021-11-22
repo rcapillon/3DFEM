@@ -38,14 +38,28 @@ FRF at 2nd observed node, x-displacement | FRF at 2nd observed node, y-displacem
 Probabilistic model for the Young's modulus (parametric uncertainty modeling) as well as the mass, stiffness and damping matrices (nonparametric uncertainty modeling).*
 
 ### FRF at 1st observed node, y-displacement
+
 | Parametric uncertainty modeling | Nonparametric uncertainty modeling | Generalized approach |
 |----|----|----|
 | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_freq_plate/frf_DOF2_1parametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_freq_plate/frf_DOF2_2nonparametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_freq_plate/frf_DOF2_3generalized.png" width="400"> |
 
+### Probability density function at 1st observed node, y-displacement, 14660 Hz
+
+| Parametric uncertainty modeling | Nonparametric uncertainty modeling | Generalized approach |
+|----|----|----|
+| <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_freq_plate/gkde_DOF2_1parametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_freq_plate/gkde_DOF2_2nonparametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_freq_plate/gkde_DOF2_3generalized.png" width="400"> |
+
 ### FRF at 2nd observed node, x-displacement
+
 | Parametric uncertainty modeling | Nonparametric uncertainty modeling | Generalized approach |
 :----:|:----:|:----:
 <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_freq_plate/frf_DOF4_1parametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_freq_plate/frf_DOF4_2nonparametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_freq_plate/frf_DOF4_3generalized.png" width="400"> |
+
+### Probability density function at 2nd observed node, x-displacement, 14660 Hz
+
+| Parametric uncertainty modeling | Nonparametric uncertainty modeling | Generalized approach |
+|----|----|----|
+| <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_freq_plate/gkde_DOF4_1parametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_freq_plate/gkde_DOF4_2nonparametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_freq_plate/gkde_DOF4_3generalized.png" width="400"> |
 
 ## time_beam
 
@@ -69,11 +83,25 @@ Deformed mesh
 Probabilistic model for the Young's modulus (parametric uncertainty modeling) as well as the mass, stiffness and damping matrices (nonparametric uncertainty modeling).*
 
 ### 1st observed node, y-displacement
+
 | Parametric uncertainty modeling | Nonparametric uncertainty modeling | Generalized approach |
 |----|----|----|
 | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF5_1parametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF5_2nonparametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF5_3generalized.png" width="400"> |
 
+### Probability density function at 1st observed node, y-displacement, 0.1125 seconds
+
+| Parametric uncertainty modeling | Nonparametric uncertainty modeling | Generalized approach |
+|----|----|----|
+| <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_gkde_DOF5_1parametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_gkde_DOF5_2nonparametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_gkde_DOF5_3generalized.png" width="400"> |
+
 ### 2nd observed node, z-displacement
+
 | Parametric uncertainty modeling | Nonparametric uncertainty modeling | Generalized approach |
 |----|----|----|
 | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF6_1parametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF6_2nonparametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF6_3generalized.png" width="400"> |
+
+### Probability density function at 2nd observed node, z-displacement, 0.1125 seconds
+
+| Parametric uncertainty modeling | Nonparametric uncertainty modeling | Generalized approach |
+|----|----|----|
+| <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_gkde_DOF6_1parametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_gkde_DOF6_2nonparametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_gkde_DOF6_3generalized.png" width="400"> |
