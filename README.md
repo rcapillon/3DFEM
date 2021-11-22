@@ -42,12 +42,15 @@ New features will be added over time.
 * Linear frequency-domain dynamics using a reduced-order model based on elastic modes
 * Linear time-domain dynamics using the Newmark scheme and a reduced-order model based on elastic modes
 * Uncertainty Quantification:
+  - Parametric probabilistic model for the mass density and Young's modulus in dynamics solvers
   - Nonparametric probabilistic models for reduced matrices in dynamics solvers
+  - Generalized probabilistic approach, including both parametric and nonparametric uncertainties, in dynamics solvers
   - Direct Monte Carlo method for uncertainty propagation
 
 ### Post-processing
 * Plotting of Frequency-Response Functions (FRF), time trajectories
 * Plotting of confidence intervals on FRF and time trajectories in stochastic simulations
+* Plotting of probability density functions at a given step using gaussian kernel density estimation
 * Export of a deformed mesh to VTK format (PolyData legacy format)
 * Export of a series of deformed meshes to VTK format for animations (elastic modes, time-domain solutions)
 
@@ -88,8 +91,6 @@ Visuals of results from the various provided sample scripts can be found [here](
 * Arc-length method for geometrically nonlinear elastostatics and elastodynamics with strong nonlinearities (e.g. post-buckling analysis)
 * Uncertainty Quantification:
   - Causal nonparametric probabilistic models for linear viscoelastic materials
-  - Parametric probabilistic models for material properties
-  - Gaussian Kernel Density Estimation (GKDE) for the estimation of probability density functions of observable quantities
 
 ### Post-processing
 * Plotting of modal coordinates at given step
