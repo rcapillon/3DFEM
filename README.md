@@ -66,6 +66,14 @@ Visuals of results from the various provided sample scripts can be found [here](
 
 ----
 
+## Features currently being worked on:
+* Computation and plotting of stresses and strains
+* Nonlinear solvers for static analysis: Newton-Raphson, Arc-length
+* Cleaning of the code and commentary
+
+
+----
+
 ## Intended future features: 
 
 ### Meshes
