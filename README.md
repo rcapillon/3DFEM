@@ -51,6 +51,7 @@ New features will be added over time.
 * Plotting of Frequency-Response Functions (FRF), time trajectories
 * Plotting of confidence intervals on FRF and time trajectories in stochastic simulations
 * Plotting of probability density functions at a given step using gaussian kernel density estimation
+* Computation of Cauchy stress tensor and linearized deformation tensor components on a deformed mesh.
 * Export of a deformed mesh to VTK format (PolyData legacy format)
 * Export of a series of deformed meshes to VTK format for animations (elastic modes, time-domain solutions)
 
@@ -67,8 +68,9 @@ Visuals of results from the various provided sample scripts can be found [here](
 ----
 
 ## Features currently being worked on:
-* Computation and plotting of stresses and strains
-* Nonlinear solvers for static analysis: Newton-Raphson, Arc-length
+* Nonlinear solvers for static analysis: Newton-Raphson, Arc-length (almost finished)
+
+* Plotting of stresses and strains on faces of elements in VTK files
 * Cleaning of the code and commentary
 
 
