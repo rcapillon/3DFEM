@@ -10,7 +10,7 @@ Deformed mesh
 
 ## linear_elastic_stress_strain
 
-*Static analysis of a cantilever linear elastic beam subjected to a surface force at its free end, along the beam's main axis. Axial stress and strain are computed.*
+*Static analysis of a cantilever linear elastic beam subjected to a compressive surface force at its free end, along the beam's main axis. Axial stress and strain are computed.*
 
 Stress-strain curve
 :----:
