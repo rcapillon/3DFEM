@@ -8,6 +8,14 @@ Deformed mesh
 :----:
 <img src="https://github.com/rcapillon/3DFEM/blob/main/results/static_beam/image_static_beam.png" width="400"> |
 
+## linear_elastic_stress_strain
+
+*Static analysis of a cantilever linear elastic beam subjected to a surface force at its free end, along the beam's main axis. Axial stress and strain are computed.*
+
+Stress-strain curve
+:----:
+<img src="https://github.com/rcapillon/3DFEM/blob/main/results/linear_elastic_stress_strain/stress_strain_linear_static_beam_3004_0.png" width="400"> |
+
 ## modal_beam
 
 *Computation of the first 10 elastic modes of a clamped-clamped linear elastic beam.*
