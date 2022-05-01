@@ -150,7 +150,7 @@ mat_P[8,8] = 1
 
 # brick8 parameters and matrices
 
-brick8_n_nodes = 4
+brick8_n_nodes = 8
 brick8_n_dofs = brick8_n_nodes * 3
 brick8_nodes_reference_coords =\
     np.array([[-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1]\
@@ -226,6 +226,10 @@ class brick8(element.Element):
         
         self.__nodes_coords = nodes_coords
         self.__vec_nodes_coords = np.reshape(nodes_coords, brick8_n_dofs)
+        self.__nodes_reference_coords = brick8_nodes_reference_coords
+
+    def get_nodes_reference_coords(self):
+        return self.__nodes_reference_coords
             
     def get_n_nodes(self):
         return brick8_n_nodes
@@ -238,6 +242,10 @@ class brick8(element.Element):
     
     def get_vec_nodes_coords(self):
         return self.__vec_nodes_coords
+
+    def set_nodes_coords(self, nodes_coords):
+        self.__nodes_coords = nodes_coords
+        self.__vec_nodes_coords = np.reshape(nodes_coords, brick8_n_dofs)
     
     def get_nodes_reference_coords(self):
         return brick8_nodes_reference_coords
@@ -252,9 +260,9 @@ class brick8(element.Element):
         return brick8_gauss
         
     def __compute_jacobian(self, index_gauss):
-        mat_J1 = np.dot(brick8_mat_De_gauss[index_gauss][:3 , :], self.__vec_nodes_coords)
+        mat_J1 = np.dot(brick8_mat_De_gauss[index_gauss][:3, :], self.__vec_nodes_coords)
         mat_J2 = np.dot(brick8_mat_De_gauss[index_gauss][3:6, :], self.__vec_nodes_coords)
-        mat_J3 = np.dot(brick8_mat_De_gauss[index_gauss][6: , :], self.__vec_nodes_coords)
+        mat_J3 = np.dot(brick8_mat_De_gauss[index_gauss][6:, :], self.__vec_nodes_coords)
         
         self.__mat_J = np.vstack((mat_J1, mat_J2, mat_J3))
                         
@@ -272,6 +280,25 @@ class brick8(element.Element):
         self.__mat_invJJJ[0:3, 0:3] = mat_invJ
         self.__mat_invJJJ[3:6, 3:6] = mat_invJ
         self.__mat_invJJJ[6:9, 6:9] = mat_invJ
+
+    def __compute_invJJJ_at_node(self, node_index):
+        node_coords = self.__nodes_reference_coords[node_index]
+
+        mat_De_node = brick8_compute_mat_De(node_coords)
+
+        mat_J1 = np.dot(mat_De_node[:3, :], self.__vec_nodes_coords)
+        mat_J2 = np.dot(mat_De_node[3:6, :], self.__vec_nodes_coords)
+        mat_J3 = np.dot(mat_De_node[6:, :], self.__vec_nodes_coords)
+
+        mat_J = np.vstack((mat_J1, mat_J2, mat_J3))
+
+        mat_invJ = np.linalg.inv(mat_J)
+        mat_invJJJ = np.zeros((9, 9))
+        mat_invJJJ[0:3, 0:3] = mat_invJ
+        mat_invJJJ[3:6, 3:6] = mat_invJ
+        mat_invJJJ[6:9, 6:9] = mat_invJ
+
+        return mat_invJJJ
         
     def get_mat_J(self):
         return self.__mat_J
@@ -378,3 +405,108 @@ class brick8(element.Element):
     
     def get_list_factorized_mat_Ke(self):
         return self.__list_factorized_mat_Ke
+    
+    def compute_list_factorized_mat_KTe(self, vec_Ue):
+        list_factorized_mat_C = self.get_material().get_factorized_mat_C()
+        
+        n_materials = self.get_material().get_n_factorized_mat_C()
+        
+        self.__list_factorized_mat_KT2e = [np.zeros((brick8_n_dofs, brick8_n_dofs)) for jj in range(n_materials)]
+        self.__list_factorized_mat_KT3e = [np.zeros((brick8_n_dofs, brick8_n_dofs)) for jj in range(n_materials)]
+        
+        counter = 0
+        
+        for g in self.get_gauss():
+            gauss_weight = g[1]
+            
+            for ii in range(n_materials):
+                mat_C = list_factorized_mat_C[ii]                
+                
+                self.__compute_jacobian(counter)
+                mat_grad = np.dot(self.__mat_invJJJ, np.dot(mat_P, brick8_mat_De_gauss[counter]))
+                
+                mat_B = np.dot(mat_G, mat_grad)
+                
+                vec_grad_Ue = np.dot(mat_grad, vec_Ue)
+                vec_D_Ue = np.dot(mat_P, vec_grad_Ue)
+                mat_D_Ue = np.zeros((6, 9))
+                mat_D_Ue[0, 0:3] = vec_D_Ue[0:3]
+                mat_D_Ue[1, 3:6] = vec_D_Ue[3:6]
+                mat_D_Ue[2, 6:]  = vec_D_Ue[6:]
+                mat_D_Ue[3, 0:3] = vec_D_Ue[3:6] / np.sqrt(2)
+                mat_D_Ue[3, 3:6] = vec_D_Ue[0:3] / np.sqrt(2)
+                mat_D_Ue[4, 0:3] = vec_D_Ue[6:]  / np.sqrt(2)
+                mat_D_Ue[4, 6:]  = vec_D_Ue[0:3] / np.sqrt(2)
+                mat_D_Ue[5, 3:6] = vec_D_Ue[6:]  / np.sqrt(2)
+                mat_D_Ue[5, 6:]  = vec_D_Ue[3:6] / np.sqrt(2)
+                
+                mat_H = np.dot(mat_D_Ue, np.dot(mat_P, mat_grad))
+                mat_F = np.eye(3) + np.reshape(vec_grad_Ue, (3, 3))
+                mat_E = 0.5 * (np.dot(mat_F.transpose(), mat_F) - np.eye(3))
+                
+                vec_E = np.zeros((6,))
+                vec_E[0] = mat_E[0, 0]
+                vec_E[1] = mat_E[1, 1]
+                vec_E[2] = mat_E[2, 2]
+                vec_E[3] = np.sqrt(2) * mat_E[1, 2]
+                vec_E[4] = np.sqrt(2) * mat_E[0, 2]
+                vec_E[5] = np.sqrt(2) * mat_E[0, 1]
+                
+                self.__list_factorized_mat_KT2e[ii] += gauss_weight * self.__det_J * (np.dot(mat_B.transpose(), np.dot(mat_C, mat_H))\
+                                                                                      + np.dot(mat_H.transpose(), np.dot(mat_C, mat_B)))
+                
+                vec_piola2 = np.dot(mat_C, vec_E)
+                mat_piola2 = np.zeros((3, 3))
+                mat_piola2[0, 0] = vec_piola2[0]
+                mat_piola2[1, 1] = vec_piola2[1]
+                mat_piola2[2, 2] = vec_piola2[2]
+                mat_piola2[1, 2] = vec_piola2[3]
+                mat_piola2[0, 2] = vec_piola2[4]
+                mat_piola2[0, 1] = vec_piola2[5]
+                
+                mat_pi = np.zeros((9,9))
+                mat_pi[0:3, 0:3] = mat_piola2
+                mat_pi[3:6, 3:6] = mat_piola2
+                mat_pi[6:, 6:]   = mat_piola2
+                
+                self.__list_factorized_mat_KT3e[ii] += gauss_weight * self.__det_J * (np.dot(mat_grad.transpose(), np.dot(mat_pi, mat_grad))\
+                                                                                          + np.dot(mat_H.transpose(), np.dot(mat_C, mat_H)))
+                
+            counter += 1
+                    
+    def get_list_factorized_mat_KT2e(self):
+        return self.__list_factorized_mat_KT2e
+    
+    def get_list_factorized_mat_KT3e(self):
+        return self.__list_factorized_mat_KT3e
+
+    def compute_element_stress_at_nodes(self, vec_Ue, return_strain=True):
+        Ue_nodes = np.reshape(vec_Ue, (brick8_n_nodes, 3))
+
+        old_nodes_coords = self.get_nodes_coords()
+        new_nodes_coords = old_nodes_coords + Ue_nodes
+
+        self.set_nodes_coords(new_nodes_coords)
+
+        list_vec_stress_nodes = []
+        if return_strain:
+            list_vec_strain_nodes = []
+
+        for node_num, node_coords in enumerate(self.__nodes_reference_coords):
+            mat_De_node = self.compute_mat_De_coords(node_coords)
+            mat_invJJJ = self.__compute_jacobian_at_node(node_num)
+            mat_B = np.dot(mat_G, np.dot(mat_invJJJ, np.dot(mat_P, mat_De_node)))
+
+            vec_strain = np.dot(mat_B, vec_Ue)
+            if return_strain:
+                list_vec_strain_nodes.append(vec_strain)
+
+            vec_stress = np.dot(self.get_material().get_mat_C(), vec_strain)
+            list_vec_stress_nodes.append(vec_stress)
+
+        self.set_nodes_coords(old_nodes_coords)
+
+        if return_strain:
+            return list_vec_strain_nodes, list_vec_stress_nodes
+        else:
+            return list_vec_stress_nodes

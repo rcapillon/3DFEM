@@ -9,6 +9,7 @@
 ##############################################################################
 
 import numpy as np
+import copy
 from scipy.sparse.linalg import eigsh, spsolve
 
 import importlib.util
@@ -62,7 +63,8 @@ class Solver:
         return self.__modes
             
     def linear_static_solver(self):
-        self.__structure.compute_K()
+        self.__structure.compute_factorized_K_vectors()
+        self.__structure.compute_factorized_K()
         self.__structure.apply_dirichlet_K()
         
         self.__force.compute_F0()
@@ -75,7 +77,297 @@ class Solver:
         
     def get_vec_U(self):
         return self.__vec_U
+
+    def get_vec_U_observed(self):
+        return self.__vec_U[self.__structure.get_mesh().get_observed_dofs()]
     
+    def nonlinear_static_solver(self, Delta_L, n_arclengths, n_iter=10, psi=1, tol=1e-3, corrections="spherical", corrector_root_selection="default", attenuation=1, n_selection=3, n_restart=10, n_grow=10, n_switch=4, verbose=True):
+        if corrector_root_selection == "automatic" or corrector_root_selection == "forward":
+            forward_centering = True
+        else:
+            forward_centering = False
+                    
+        counter_selection = 0
+        
+        self.__mat_U_nonlin = np.zeros((self.__structure.get_n_total_dofs(), n_arclengths + 1))
+        self.__x_axis = np.zeros((n_arclengths + 1,)) # lambda
+        
+        print("Computing force and linear stiffness...")
+        
+        self.__structure.compute_factorized_K_vectors()
+        self.__structure.compute_factorized_K()
+        self.__structure.apply_dirichlet_K()
+        
+        self.__force.compute_F0()
+        self.__force.apply_dirichlet_F0()
+        
+        print("Starting arc-length resolution...")
+        
+        vec_U = np.zeros((self.__structure.get_n_total_dofs(),))
+        old_vec_Delta_U = np.zeros((self.__structure.get_n_free_dofs(),))
+        lambda_factor = 0
+        old_Delta_L = Delta_L
+        
+        counter_arclength = 0
+        S = 1
+        counter_signswitch = 0
+        counter_cut = 0
+        counter_grow = 0
+        
+        self.__structure.compute_factorized_KT_vectors(vec_U)
+        self.__structure.compute_factorized_KT(vec_U)
+        self.__structure.apply_dirichlet_KT()
+        
+        while counter_arclength < n_arclengths:
+            if verbose:
+                print("\nArc-length n°", counter_arclength, " , Delta_L =", Delta_L)
+                        
+            if corrector_root_selection == "automatic":
+                if counter_selection >= n_selection:
+                    forward_centering = False
+                    # print("root selection: lowest error")
+                else:
+                    forward_centering = True
+                    # print("root selection: forward centering")
+            
+            k0 = psi**2 * np.linalg.norm(self.__force.get_F0L())**2
+                
+            vec_delta_Uf = spsolve(self.__structure.get_KTLL(), self.__force.get_F0L())
+            
+            Delta_lambda = Delta_L / np.sqrt(np.dot(vec_delta_Uf, vec_delta_Uf) + k0)
+                        
+            a0 = np.dot(old_vec_Delta_U, vec_delta_Uf) + k0 * Delta_lambda
+            if a0 < 0:
+                Delta_lambda = -Delta_lambda
+                if S == 1:
+                    counter_signswitch += 1
+                else:
+                    counter_signswitch = 0
+                S = -1
+                # print("S = -1")
+            else:
+                if S == -1:
+                    counter_signswitch += 1
+                else:
+                    counter_signswitch = 0
+                S = 1
+                # print('S = 1')
+            
+            vec_Delta_U = Delta_lambda * vec_delta_Uf
+            
+            vec_U[self.__structure.get_mesh().get_free_dofs()] += vec_Delta_U
+            lambda_factor += Delta_lambda
+            
+            # if verbose == True:
+                # print("Error = ", error)
+                
+            if forward_centering:
+                Delta_L_corrections = 0.5 * Delta_L
+            else:
+                Delta_L_corrections = Delta_L
+                
+            if corrections == "cylindrical":
+                k1 = 0
+                Delta_L_corrections = Delta_L_corrections * np.sqrt(np.dot(vec_delta_Uf, vec_delta_Uf) / (np.dot(vec_delta_Uf, vec_delta_Uf) + k0))
+            else:
+                k1 = k0
+                Delta_L_corrections = Delta_L
+                
+            counter_iter = 0
+            
+            if counter_signswitch >= n_switch:
+                error = tol + 1
+                counter_iter = n_iter
+                counter_signswitch = 0
+            else:
+                self.__structure.compute_factorized_KT_vectors(vec_U)
+                self.__structure.compute_factorized_KT(vec_U)
+                self.__structure.apply_dirichlet_KT()
+                error = np.linalg.norm(lambda_factor * self.__force.get_F0L() - self.__structure.get_FintL()) / np.linalg.norm(lambda_factor * self.__force.get_F0L())
+            
+            print("Predictor error:", error)
+
+            if np.isnan(error):
+                error = tol + 1
+                counter_iter = n_iter
+
+            corrections_epsilon = tol
+
+            # corrections_epsilon = np.min([tol, error * tol]) avec tol = 1e-3
+
+            while counter_iter < n_iter and error > corrections_epsilon:
+                if verbose:
+                    print("Iteration", counter_iter + 1)
+                
+                vec_delta_Uf = spsolve(self.__structure.get_KTLL(), self.__force.get_F0L())
+                vec_delta_Un = spsolve(self.__structure.get_KTLL(), lambda_factor * self.__force.get_F0L() - self.__structure.get_FintL())
+                                
+                if forward_centering:
+                    a_iter = np.dot(vec_delta_Uf, vec_delta_Uf) + k1
+                    b_iter = 2 * np.dot(vec_delta_Uf, 0.5 * vec_Delta_U + vec_delta_Un) + Delta_lambda * k1
+                    c_iter = np.dot(0.5 * vec_Delta_U + vec_delta_Un, 0.5 * vec_Delta_U + vec_delta_Un) + (0.5 * Delta_lambda)**2 * k1 - Delta_L_corrections**2 
+                                        
+                else:
+                    a_iter = np.dot(vec_delta_Uf, vec_delta_Uf) + k1
+                    b_iter = 2 * np.dot(vec_delta_Uf, vec_Delta_U + vec_delta_Un) + 2 * Delta_lambda * k1
+                    c_iter = np.dot(vec_Delta_U + vec_delta_Un, vec_Delta_U + vec_delta_Un) + Delta_lambda**2 * k1 - Delta_L_corrections**2 
+                    
+                d_iter = np.dot(vec_Delta_U, vec_delta_Uf)
+                discriminant = b_iter**2 - 4 * a_iter * c_iter
+                
+                if discriminant > 0:
+                    # print("Discriminant > 0")
+                    
+                    delta_lambda_root1 = -(b_iter + np.sqrt(discriminant)) / (2 * a_iter)
+                    delta_lambda_root2 = -(b_iter - np.sqrt(discriminant)) / (2 * a_iter)
+                    
+                    if forward_centering:
+                        vec_Delta_U_root1 = vec_Delta_U + vec_delta_Un + delta_lambda_root1 * vec_delta_Uf
+                        vec_Delta_U_root2 = vec_Delta_U + vec_delta_Un + delta_lambda_root2 * vec_delta_Uf
+                        Delta_lambda_root1 = Delta_lambda + delta_lambda_root1
+                        Delta_lambda_root2 = Delta_lambda + delta_lambda_root2
+                        
+                        arc_length_root1 = np.dot(vec_Delta_U_root1, vec_Delta_U_root1) + k0 * Delta_lambda_root1**2
+                        arc_length_root2 = np.dot(vec_Delta_U_root2, vec_Delta_U_root2) + k0 * Delta_lambda_root2**2
+                        
+                        if arc_length_root1 >= arc_length_root2:
+                            delta_lambda = delta_lambda_root1
+                        else:
+                            delta_lambda = delta_lambda_root2
+                            
+                    else:
+                        delta_lambda = delta_lambda_root1
+                        if (d_iter * delta_lambda_root2) > (d_iter * delta_lambda_root1):
+                            delta_lambda = delta_lambda_root2
+                    
+                    vec_Delta_U += vec_delta_Un + delta_lambda * vec_delta_Uf
+                    vec_U[self.__structure.get_mesh().get_free_dofs()] += vec_delta_Un + delta_lambda * vec_delta_Uf
+                    Delta_lambda += delta_lambda
+                    lambda_factor += delta_lambda
+                    
+                    self.__structure.compute_factorized_KT_vectors(vec_U)
+                    self.__structure.compute_factorized_KT(vec_U)
+                    self.__structure.apply_dirichlet_KT()
+                    
+                    error = np.linalg.norm(lambda_factor * self.__force.get_F0L() - self.__structure.get_FintL()) / np.linalg.norm(lambda_factor * self.__force.get_F0L())
+                    print("Corrector error, case 1: ", error)
+                    
+                elif discriminant == 0:
+                    # print("Discriminant = 0")
+                    
+                    delta_lambda = -b_iter / (2 * a_iter)
+                    
+                    vec_Delta_U += vec_delta_Un + delta_lambda * vec_delta_Uf
+                    vec_U[self.__structure.get_mesh().get_free_dofs()] += vec_delta_Un + delta_lambda * vec_delta_Uf
+                    Delta_lambda += delta_lambda
+                    lambda_factor += delta_lambda
+                    
+                    self.__structure.compute_factorized_KT_vectors(vec_U)
+                    self.__structure.compute_factorized_KT(vec_U)
+                    self.__structure.apply_dirichlet_KT()
+                    
+                    error = np.linalg.norm(lambda_factor * self.__force.get_F0L() - self.__structure.get_FintL()) / np.linalg.norm(lambda_factor * self.__force.get_F0L())
+                    print("Corrector error, case 2: ", error)
+                    
+                else:
+                    # print("Discriminant < 0")
+                    
+                    a0_partial = a_iter
+                    b0_partial = 2 * np.dot(vec_delta_Uf, vec_Delta_U) + 2 * Delta_lambda * k1
+                    b1_partial = 2 * np.dot(vec_delta_Uf, vec_delta_Un)
+                    c0_partial = np.dot(vec_Delta_U, vec_Delta_U) + Delta_lambda**2 * k1 - Delta_L_corrections**2
+                    c1_partial = 2 * np.dot(vec_delta_Un, vec_Delta_U)
+                    c2_partial = np.dot(vec_delta_Un, vec_delta_Un)
+                    
+                    a_s = b1_partial**2 - 4 * a0_partial * c2_partial
+                    b_s = 2 * b0_partial * b1_partial - 4 * a0_partial * c1_partial
+                    c_s = b0_partial**2 - 4 * a0_partial * c0_partial
+                    
+                    discriminant_s = b_s**2 - 4 * a_s * c_s
+                                        
+                    delta_s_max = (-b_s - np.sqrt(discriminant_s)) / (2 * a_s)
+                                        
+                    if delta_s_max <= 0 or delta_s_max > 1:
+                        # print("delta_s_max = ", delta_s_max)
+                        counter_iter = n_iter - 1
+                    else:
+                        delta_s = delta_s_max
+                        
+                        a_iter_s = a0_partial
+                        b_iter_s = b0_partial + b1_partial * delta_s
+                        c_iter_s = c0_partial + c1_partial * delta_s + c2_partial * delta_s**2
+                        
+                        discriminant_iter_s = b_iter_s**2 - 4 * a_iter_s * c_iter_s
+                        
+                        delta_lambda = -b_iter_s / (2 * a_iter_s)
+                        
+                        delta_lambda_root1 = -(b_iter_s + np.sqrt(discriminant_iter_s)) / (2 * a_iter_s)
+                        delta_lambda_root2 = -(b_iter_s - np.sqrt(discriminant_iter_s)) / (2 * a_iter_s)
+                        
+                        delta_lambda = delta_lambda_root1
+                                                                    
+                        if (d_iter * delta_lambda_root2) > (d_iter * delta_lambda_root1):
+                            delta_lambda = delta_lambda_root2
+                                                
+                        vec_Delta_U += delta_s * vec_delta_Un + delta_lambda * vec_delta_Uf
+                        vec_U[self.__structure.get_mesh().get_free_dofs()] += delta_s * vec_delta_Un + delta_lambda * vec_delta_Uf
+                        Delta_lambda += delta_lambda
+                        lambda_factor += delta_lambda
+                        
+                        self.__structure.compute_factorized_KT_vectors(vec_U)
+                        self.__structure.compute_factorized_KT(vec_U)
+                        self.__structure.apply_dirichlet_KT()
+                        
+                        error = np.linalg.norm(lambda_factor * self.__force.get_F0L() - self.__structure.get_FintL()) / np.linalg.norm(lambda_factor * self.__force.get_F0L())
+                        print("Corrector error, case 3: ", error)
+                    
+                # if verbose == True:
+                    # print("Error = ", error)
+
+                if np.isnan(error):
+                    error = tol + 1
+                    counter_iter = n_iter
+                
+                counter_iter += 1
+                                    
+            if error <= corrections_epsilon:
+                print("Increment converged.")
+                old_vec_Delta_U = vec_Delta_U
+                counter_grow += 1
+                if counter_grow >= n_grow:
+                    counter_grow = 0
+                    if counter_cut > 0:
+                        counter_cut -= 1
+                    if counter_selection > 0:
+                        counter_selection -= 1
+                    if Delta_L < old_Delta_L:
+                        Delta_L /= attenuation
+                    elif Delta_L > old_Delta_L:
+                        Delta_L *= attenuation
+                counter_arclength += 1
+                self.__mat_U_nonlin[self.__structure.get_mesh().get_free_dofs(), counter_arclength] = vec_U[self.__structure.get_mesh().get_free_dofs()]
+                self.__x_axis[counter_arclength] = lambda_factor
+            else:
+                vec_U = copy.deepcopy(self.__mat_U_nonlin[:, counter_arclength])
+                lambda_factor = copy.deepcopy(self.__x_axis[counter_arclength])
+                Delta_L *= attenuation
+                if counter_cut >= n_restart:
+                    print("Arc-length method could not converge.")
+                    self.__mat_U_nonlin[self.__structure.get_mesh().get_free_dofs(), (counter_arclength + 1):] = np.tile(np.array([vec_U[self.__structure.get_mesh().get_free_dofs()]]).transpose(), (1, n_arclengths - counter_arclength))
+                    self.__x_axis[(counter_arclength + 1):] = lambda_factor
+                    counter_arclength = n_arclengths
+                counter_grow = 0
+                counter_cut += 1
+                counter_selection += 1
+                self.__structure.compute_factorized_KT_vectors(vec_U)
+                self.__structure.compute_factorized_KT(vec_U)
+                self.__structure.apply_dirichlet_KT()
+            
+        self.__mat_U_observed = self.__mat_U_nonlin[self.__structure.get_mesh().get_observed_dofs(), :]
+        
+    def get_mat_U_nonlin(self):
+        return self.__mat_U_nonlin
+            
     def linear_newmark_solver(self, beta1, beta2, vec_t, n_modes, verbose=True):
         self.__x_axis = vec_t
         
