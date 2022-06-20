@@ -33,7 +33,7 @@ Paraview is suggested for visualizing exported VTK files, especially since anima
 Visuals of results from each example script can be found [here](https://github.com/rcapillon/3DFEM/blob/main/examples_results.md).
 
 | Time-domain deterministic simulation| Frequency-domain stochastic simulation | Nonlinear statics deterministic simulation |
-|:----:|:----:|
+|:----:|:----:|:----:|
 | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/animation_linear_newmark_example.gif" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_U_rand_linear_frequency_UQ_nonparametric_example6673.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/animation_nonlinear_statics_arclength_example.gif" width="400"> |
 
 ----
