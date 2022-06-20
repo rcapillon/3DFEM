@@ -98,6 +98,7 @@ Visuals of results from each example script can be found [here](https://github.c
 
 ### Meshes
 * Support for Tet10, Prism18, Brick27 elements (including splitting of existing meshes using Tet4, Prism6 and Brick8 elements
+* Exporting/importing mesh to/from a .txt file
 
 ### Materials
 * All anisotropy classes for elastic materials
