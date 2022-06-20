@@ -39,13 +39,13 @@ Deformed mesh as the frequency spectrum is sweeped |
 ### Uncertain frequency responses
 
 Parametric uncertainties | Nonparametric uncertainties | Generalized uncertainties |
-:----:|:----:|
+:----:|:----:|:----:|
 <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_U_rand_linear_frequency_UQ_parametric_example6673.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_U_rand_linear_frequency_UQ_nonparametric_example6673.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_U_rand_linear_frequency_UQ_generalized_example6673.png" width="400">
 
 ### Probability density function at 14660 Hz
 
 Parametric uncertainties | Nonparametric uncertainties | Generalized uncertainties |
-:----:|:----:|
+:----:|:----:|:----:|
 <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_gkde_linear_frequency_UQ_parametric_example6674.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_gkde_linear_frequency_UQ_nonparametric_example6674.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_gkde_linear_frequency_UQ_generalized_example6674.png" width="400">
 
 ## linear_newmark_example
@@ -55,7 +55,7 @@ Vertical displacement against time |
 <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_linear_newmark_example3071.png" width="400"> | 
 
 Deformed mesh as time is incremented |
-:----:
+:----:|
 <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/animation_linear_newmark_example.gif" width="400"> |
 
 ## linear_newmark_UQ_example
@@ -63,11 +63,11 @@ Deformed mesh as time is incremented |
 ### Uncertain displacements
 
 Parametric uncertainties | Nonparametric uncertainties | Generalized uncertainties |
-:----:|:----:|
+:----:|:----:|:----:|
 <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_U_rand_linear_newmark_UQ_parametric_example1544.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_U_rand_linear_newmark_UQ_nonparametric_example1544.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_U_rand_linear_newmark_UQ_generalized_example1544.png" width="400">
 
 ### Probability density function at 0.1125 seconds
 
 Parametric uncertainties | Nonparametric uncertainties | Generalized uncertainties |
-:----:|:----:|
+:----:|:----:|:----:|
 <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_gkde_linear_newmark_UQ_parametric_example3069.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_gkde_linear_newmark_UQ_nonparametric_example3069.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_gkde_linear_newmark_UQ_generalized_example3069.png" width="400">
