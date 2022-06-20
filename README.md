@@ -5,7 +5,7 @@ This python library allows for solving 3D structural problems with or without un
 New features will be added over time.
 Documentation for the library will be added. For now, one should look at the examples (one for each available solver) to see how to run a specific simulation.
 
-*This code has **NOT** been validated on reference cases yet.*
+*Solvers have **NOT** been validated on reference cases yet.*
 
 ## Requirements and installation
 Create a virtual environment with a Python3 distribution and install the requirements listed in the file 'requirements.txt'.
