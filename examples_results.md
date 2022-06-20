@@ -4,7 +4,7 @@
 
 Undeformed mesh | Deformed mesh |
 :----:|:----:
-<img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/undeformedmesh_linear_statics_example.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/deformedmesh_linear_statics_example.png" width="400"> |
+<img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/image_undeformed_mesh_linear_statics_example.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/image_deformed_mesh_linear_statics_example.png" width="400"> |
 
 ## modal_example
 
