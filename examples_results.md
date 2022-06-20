@@ -26,7 +26,7 @@ Load-displacement curve | Mesh deformation |
 
 ## linear_frequency_example
 
-Frequency response at certain DOFs |
+Frequency response at certain DOFs | |
 :----:|:----:|
 <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_linear_frequency_example6674.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_linear_frequency_example12852.png" width="400"> |
 
