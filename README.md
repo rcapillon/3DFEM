@@ -1,6 +1,5 @@
 # 3DFEM
-## Python 3D finite element code for structural dynamics
-## with or without uncertainty modeling
+## Python 3D finite element code for structural dynamics with uncertainty modeling
 
 This python library allows for solving 3D structural problems with or without uncertainties using the finite element method.
 New features will be added over time.
