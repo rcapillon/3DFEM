@@ -34,7 +34,7 @@ Visuals of results from each example script can be found [here](https://github.c
 
 |||
 |:----:|:----:|
-| <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/animation_linear_newmark_example.gif" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_U_rand_linear_frequency_UQ_nonparametric_example6674.png" width="400"> |
+| <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/animation_linear_newmark_example.gif" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_U_rand_linear_frequency_UQ_nonparametric_example6673.png" width="400"> |
 
 ----
 
