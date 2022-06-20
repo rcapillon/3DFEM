@@ -2,37 +2,37 @@
 
 ## linear_statics_example
 
-Undeformed mesh | Deformed mesh
+Undeformed mesh | Deformed mesh |
 :----:|:----:
 <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/undeformedmesh_linear_statics_example.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/deformedmesh_linear_statics_example.png" width="400"> |
 
 ## modal_example
 
-10th elastic mode
+10th elastic mode |
 :----:
 <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/animation_modal_example.gif" width="400"> |
 
 ## nonlinear_statics_newtonraphson_example
 
-Load-displacement curve | Mesh deformation
+Load-displacement curve | Mesh deformation |
 :----:|:----:
 <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/animation_norm_U_nonlinear_statics_newtonraphson_example.gif" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/animation_nonlinear_statics_newtonraphson_example.gif" width="400"> |
 
 ## nonlinear_statics_arclength_example
 
-Load-displacement curve | Mesh deformation
+Load-displacement curve | Mesh deformation |
 :----:|:----:
 <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/animation_norm_U_nonlinear_statics_arclength_example.gif" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/animation_nonlinear_statics_arclength_example.gif" width="400"> |
 
 ## linear_frequency_example
 
-Frequency response at certain DOFs
+Frequency response at certain DOFs |
 :----:|:----:|
 <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_linear_frequency_example6674.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_linear_frequency_example12852.png" width="400"> |
 
-Deformed mesh as the frequency spectrum is sweeped
+Deformed mesh as the frequency spectrum is sweeped |
 :----:
-<img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/animation_linear_frequency_example.gif" width="400">
+<img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/animation_linear_frequency_example.gif" width="400"> |
 
 ## linear_frequency_UQ_example
 
