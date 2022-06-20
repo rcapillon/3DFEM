@@ -36,47 +36,38 @@ Deformed mesh as the frequency spectrum is sweeped |
 
 ## linear_frequency_UQ_example
 
-## time_beam
+### Uncertain frequency responses
 
-*Time-domain dynamical analysis of a clamped-free linear elastic beam subjected to a nodal force at the center of its free end. The force linearly increases to a maximum value, stays constant a while and then vanishes.*
+Parametric uncertainties | Nonparametric uncertainties | Generalized uncertainties |
+:----:|:----:|
+<img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_U_rand_linear_frequency_UQ_parametric_example6673.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_U_rand_linear_frequency_UQ_nonparametric_example6673.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_U_rand_linear_frequency_UQ_generalized_example6673.png" width="400">
 
-Deformed mesh
+### Probability density function at 14660 Hz
+
+Parametric uncertainties | Nonparametric uncertainties | Generalized uncertainties |
+:----:|:----:|
+<img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_gkde_linear_frequency_UQ_parametric_example6674.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_gkde_linear_frequency_UQ_nonparametric_example6674.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_gkde_linear_frequency_UQ_generalized_example6674.png" width="400">
+
+## linear_newmark_example
+
+Vertical displacement against time |
+:----:|
+<img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_linear_newmark_example3071.png" width="400"> | 
+
+Deformed mesh as time is incremented |
 :----:
-<img src="https://github.com/rcapillon/3DFEM/blob/main/results/time_beam/animation_time_beam.gif" width="400"> |
+<img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/animation_linear_newmark_example.gif" width="400"> |
 
-1st observed node, x-displacement | 1st observed node, y-displacement | 1st observed node, z-displacement
-:----:|:----:|:----:
-<img src="https://github.com/rcapillon/3DFEM/blob/main/results/time_beam/U_DOF1.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/time_beam/U_DOF2.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/time_beam/U_DOF3.png" width="400"> |
+## linear_newmark_UQ_example
 
-2nd observed node, x-displacement | 2nd observed node, y-displacement | 2nd observed node, z-displacement
-:----:|:----:|:----:
-<img src="https://github.com/rcapillon/3DFEM/blob/main/results/time_beam/U_DOF4.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/time_beam/U_DOF5.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/time_beam/U_DOF6.png" width="400"> |
+### Uncertain displacements
 
-## UQ_time_beam
+Parametric uncertainties | Nonparametric uncertainties | Generalized uncertainties |
+:----:|:----:|
+<img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_U_rand_linear_newmark_UQ_parametric_example1544.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_U_rand_linear_newmark_UQ_nonparametric_example1544.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_U_rand_linear_newmark_UQ_generalized_example1544.png" width="400">
 
-*Time-domain dynamical analysis of a clamped-free linear elastic beam subjected to a nodal force at the center of its free end. The force linearly increases to a maximum value, stays constant a while and then vanishes.
-Probabilistic model for the Young's modulus (parametric uncertainty modeling) as well as the mass, stiffness and damping matrices (nonparametric uncertainty modeling).*
+### Probability density function at 0.1125 seconds
 
-### 1st observed node, y-displacement
-
-| Parametric uncertainty modeling | Nonparametric uncertainty modeling | Generalized approach |
-|----|----|----|
-| <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF5_1parametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF5_2nonparametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF5_3generalized.png" width="400"> |
-
-### Probability density function at 1st observed node, y-displacement, 0.1125 seconds
-
-| Parametric uncertainty modeling | Nonparametric uncertainty modeling | Generalized approach |
-|----|----|----|
-| <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_gkde_DOF5_1parametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_gkde_DOF5_2nonparametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_gkde_DOF5_3generalized.png" width="400"> |
-
-### 2nd observed node, z-displacement
-
-| Parametric uncertainty modeling | Nonparametric uncertainty modeling | Generalized approach |
-|----|----|----|
-| <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF6_1parametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF6_2nonparametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF6_3generalized.png" width="400"> |
-
-### Probability density function at 2nd observed node, z-displacement, 0.1125 seconds
-
-| Parametric uncertainty modeling | Nonparametric uncertainty modeling | Generalized approach |
-|----|----|----|
-| <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_gkde_DOF6_1parametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_gkde_DOF6_2nonparametric.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_gkde_DOF6_3generalized.png" width="400"> |
+Parametric uncertainties | Nonparametric uncertainties | Generalized uncertainties |
+:----:|:----:|
+<img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_gkde_linear_newmark_UQ_parametric_example3069.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_gkde_linear_newmark_UQ_nonparametric_example3069.png" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_gkde_linear_newmark_UQ_generalized_example3069.png" width="400">
