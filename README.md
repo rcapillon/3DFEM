@@ -22,7 +22,9 @@ cd examples/
 python linear_statics_example.py 
 ```
 
-All examples will create a 'plots' and/or a 'vtk_files' directory where they are executed with the results files. Paraview is suggested for visualizing exported VTK files, especially since animations are generated as a series of VTK files as handled by this software.
+All examples will create a 'plots' and/or a 'vtk_files' directory where they are executed with the results files. 
+
+Paraview is suggested for visualizing exported VTK files, especially since animations are generated as a series of VTK files as handled by this software.
 
 ----
 
