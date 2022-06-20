@@ -30,7 +30,7 @@ Paraview is suggested for visualizing exported VTK files, especially since anima
 
 ## Examples of solutions
 
-Visuals of results from each example script can be found [here](https://github.com/rcapillon/3DFEM/blob/main/examples_results.md).
+Results from each example script (one for each available solver) can be found [here](https://github.com/rcapillon/3DFEM/blob/main/readme_files/examples_results.md).
 
 | Time-domain deterministic simulation| Frequency-domain stochastic simulation | Nonlinear statics deterministic simulation |
 |:----:|:----:|:----:|
