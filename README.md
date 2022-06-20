@@ -1,16 +1,41 @@
 # 3DFEM
-## Python 3D finite element code
+## Python 3D finite element code for structural dynamics
+## with or without uncertainty modeling
 
-This python code allows for solving 3D structural problems with or without uncertainties using the finite element method.
+This python library allows for solving 3D structural problems with or without uncertainties using the finite element method.
 New features will be added over time.
+Documentation for the library will be added. For now, one should look at the examples (one for each available solver) to see how to run a specific simulation.
 
 *This code has **NOT** been validated on reference cases yet.*
 
-## Requirements and dependencies
-* Python 3
-* numpy, scipy
+## Requirements and installation
+Create a virtual environment with a Python3 distribution and install the requirements listed in the file 'requirements.txt'.
+Clone this repository in the folder of your choosing and run 'setup.py' in that directory using a terminal:
 
-* Paraview is suggested for visualizing exported VTK files, especially since animations are generated as a series of VTK files as handled by this software.
+```
+python setup.py install
+```
+
+Then, you're good to go. You can try the sample study scripts in the 'examples' directory, for instance:
+
+```
+cd examples/
+python linear_statics_example.py 
+```
+
+All examples will create a 'plots' and/or a 'vtk_files' directory where they are executed with the results files. Paraview is suggested for visualizing exported VTK files, especially since animations are generated as a series of VTK files as handled by this software.
+
+----
+
+## Examples of solutions
+
+Visuals of results from each example script can be found [here](https://github.com/rcapillon/3DFEM/blob/main/examples_results.md).
+
+|||
+|:----:|:----:|
+| <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/animation_linear_newmark_example.gif" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/plot_U_rand_linear_frequency_UQ_nonparametric_example6674.png" width="400"> |
+
+----
 
 ## Current features:
 
@@ -18,6 +43,8 @@ New features will be added over time.
 * Tetrahedral mesh generation from a set of points using scipy.spatial.Delaunay
 * 4-node tetrahedral (Tet4), 6-node prism (Prism6), 8-node brick (Brick8) elements support
 * Support for meshes containing different types of elements, possibly of different orders
+* Merging of two meshes by fusing nodes whose coordinates are equal up to a certain tolerance
+* Automatic mesh generation of basic shapes: for now, rectangular bricks and beams with a circular cross-section are available
 
 ### Materials
 * Linear isotropic elastic materials
@@ -29,20 +56,23 @@ New features will be added over time.
 * Support only for zero-Dirichlet boundary conditions
 * Full Gauss quadrature scheme
 
+### Boundary conditions
+* Only zero-valued Dirichlet conditions are supported for now
+* Nodal forces as Neumann conditions
+* Support for modulation of the initial force vector by a given function over time steps or frequency steps in dynamical analyses
+
 ### Reduced-Order Modeling
 * Projection on linear elastic modes
 
-### Forces
-* Nodal forces
-* Support for modulation of the initial force vector by a given function over time steps or frequency steps in dynamical analyses
-
 ### Solvers
 * Modal analysis
-* Linear static analysis
+* Linear statics analysis
 * Linear frequency-domain dynamics using a reduced-order model based on elastic modes
 * Linear time-domain dynamics using the Newmark scheme and a reduced-order model based on elastic modes
+* Nonlinear statics analysis using the Newton-Raphson method
+* Nonlinear statics analysis using the Arc-Length method
 * Uncertainty Quantification:
-  - Parametric probabilistic model for the mass density and Young's modulus in dynamics solvers
+  - Parametric probabilistic model for the Young's modulus in dynamics solvers
   - Nonparametric probabilistic models for reduced matrices in dynamics solvers
   - Generalized probabilistic approach, including both parametric and nonparametric uncertainties, in dynamics solvers
   - Direct Monte Carlo method for uncertainty propagation
@@ -51,35 +81,22 @@ New features will be added over time.
 * Plotting of Frequency-Response Functions (FRF), time trajectories
 * Plotting of confidence intervals on FRF and time trajectories in stochastic simulations
 * Plotting of probability density functions at a given step using gaussian kernel density estimation
-* Computation of Cauchy stress tensor and linearized deformation tensor components on a deformed mesh.
 * Export of a deformed mesh to VTK format (PolyData legacy format)
-* Export of a series of deformed meshes to VTK format for animations (elastic modes, time-domain solutions)
-
-----
-
-## Examples of solutions
-
-Visuals of results from the various provided sample scripts can be found [here](https://github.com/rcapillon/3DFEM/blob/main/results/README.md).
-
-|||
-|:----:|:----:|
-| <img src="https://github.com/rcapillon/3DFEM/blob/main/results/time_beam/animation_time_beam.gif" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/results/UQ_time_beam/U_DOF5_3generalized.png" width="400"> |
+* Export of a series of deformed meshes to VTK format for animations (elastic modes, time-domain, frequency-domain and nonlinear statics solutions)
 
 ----
 
 ## Features currently being worked on:
-* Nonlinear solvers for static analysis: Newton-Raphson, Arc-length (almost finished)
-
-* Plotting of stresses and strains on faces of elements in VTK files
-* Cleaning of the code and commentary
-
+* Computation of Cauchy stresses and linearized strains in elements 
+* Display of stresses and strains on faces of elements in VTK files
+* Code commentary and documentation
 
 ----
 
 ## Intended future features: 
 
 ### Meshes
-* Support for Tet10, Prism18, Brick27 elements
+* Support for Tet10, Prism18, Brick27 elements (including splitting of existing meshes using Tet4, Prism6 and Brick8 elements
 
 ### Materials
 * All anisotropy classes for elastic materials
@@ -97,13 +114,12 @@ Visuals of results from the various provided sample scripts can be found [here](
 * Surface forces
 
 ### Solvers
-* Newton-Raphson method for geometrically nonlinear elastostatics and elastodynamics
-* Arc-length method for geometrically nonlinear elastostatics and elastodynamics with strong nonlinearities (e.g. post-buckling analysis)
 * Uncertainty Quantification:
-  - Parametric probabilistic models for all elastic coefficients
+  - Parametric probabilistic models for all material coefficients
   - Causal nonparametric probabilistic models for linear viscoelastic materials
 * Parallelization of stochastic solvers
 
 ### Post-processing
 * Plotting of modal coordinates at given step
+* Computation of Cauchy stress tensor and linearized deformation tensor components on a deformed mesh.
 * Support for including element stress and strain components in the VTK files
