@@ -16,13 +16,13 @@ Undeformed mesh | Deformed mesh |
 
 Load-displacement curve | Mesh deformation |
 :----:|:----:
-<img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/animation_norm_U_nonlinear_statics_newtonraphson_example.gif" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/animation_nonlinear_statics_newtonraphson_example.gif" width="400"> |
+<img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/animation_norm_U_nonlinear_statics_newtonraphson_example.gif" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/animation_nonlinear_statics_newtonraphson_example_.gif" width="400"> |
 
 ## nonlinear_statics_arclength_example
 
 Load-displacement curve | Mesh deformation |
 :----:|:----:
-<img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/animation_norm_U_nonlinear_statics_arclength_example.gif" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/animation_nonlinear_statics_arclength_example.gif" width="400"> |
+<img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/animation_norm_U_nonlinear_statics_arclength_example.gif" width="400"> | <img src="https://github.com/rcapillon/3DFEM/blob/main/readme_files/animation_nonlinear_statics_arclength_example_.gif" width="400"> |
 
 ## linear_frequency_example
 
